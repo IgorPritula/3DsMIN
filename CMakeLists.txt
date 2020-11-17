@@ -18,7 +18,9 @@ include_directories(vendor/stb_image)
 add_subdirectory(vendor/GLFW)
 add_subdirectory(vendor/glm)
 
-find_library(OPENGL_LIBRARY OpenGL.framework)
+if (APPLE)
+    find_library(OPENGL_LIBRARY OpenGL.framework)
+endif()
 
 add_executable(3DsMIN
         Event/Event.cpp
@@ -46,4 +48,7 @@ add_executable(3DsMIN
         Window.cpp)
 
 target_link_libraries(3DsMIN glfw)
-target_link_libraries(3DsMIN ${OPENGL_LIBRARY})
+
+if (APPLE)
+    target_link_libraries(3DsMIN ${OPENGL_LIBRARY})
+endif()
