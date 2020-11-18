@@ -6,8 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 FILE(COPY res DESTINATION "${CMAKE_BINARY_DIR}")
 
 include_directories(.)
-include_directories(Event)
-include_directories(tests)
 include_directories(vendor/GLFW/include)
 include_directories(vendor/glm)
 include_directories(vendor/glew/include)
@@ -35,7 +33,7 @@ add_executable(3DsMIN
         vendor/imgui/imgui_draw.cpp
         vendor/imgui/imgui_widgets.cpp
         Camera.cpp
-        CubeObject.cpp
+        Entity/CubeObject.cpp
         functions.cpp
         IndexBuffer.cpp
         main.cpp

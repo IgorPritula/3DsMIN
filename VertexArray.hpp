@@ -11,7 +11,7 @@
 
 #include "VertexBuffer.hpp"
 #include <vector>
-#include "Entity.hpp"
+#include "Entity/Entity.hpp"
 #include "IndexBuffer.hpp"
 
 class VertexBufferLayout;

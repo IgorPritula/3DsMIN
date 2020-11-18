@@ -13,7 +13,7 @@
 #include "IndexBuffer.hpp"
 #include "VertexArray.hpp"
 #include <vector>
-#include "Entity.hpp"
+#include "Entity/Entity.hpp"
 
 #define ASSERT(x) if (!x) __asm__("int $3")
 #define GLCall(x) GLClearError(); \

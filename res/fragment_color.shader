@@ -16,13 +16,13 @@ void main()
 {
     //        vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
     // ambient
-    float ambientStrength = 0.1;
+    float ambientStrength = 0.5;
     vec4 ambient = ambientStrength * lightColor;
     
     // diffuse
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(lightPos - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
+    float diff = max(dot(norm, lightDir), 0.3);
     vec4 diffuse = diff * lightColor;
     if (int(TexID) < 0) {
         FragColor = (ambient + diffuse) * Color;

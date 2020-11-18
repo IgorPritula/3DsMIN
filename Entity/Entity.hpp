@@ -24,10 +24,11 @@
 
 class Entity {
 public:
+    // todo add std::move
     Entity(std::string name) : m_Position(0.0f), m_Rotation({0, {1.0f, 0.0f, 0.0f}}), m_color({RGB(145), RGB(145), RGB(145), 1.0f}), m_Name(name) {}
     virtual std::vector<Vertex> getVertices() const { return m_Vertices; };
     virtual std::vector<unsigned int> getIndeces() const { return m_indices; };
-    virtual void moveEnity(glm::vec3) = 0;
+//    virtual void moveEnity(glm::vec3) = 0;
 
     virtual std::string getName() const { return m_Name; };
     virtual void setName(std::string name) { m_Name = name; };

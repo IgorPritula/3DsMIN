@@ -82,6 +82,6 @@ public:
     }
     
 //    inline const char* getName() const override {return "Cube";}
-    void moveEnity(glm::vec3) override;
+//    void moveEnity(glm::vec3) override;
 };
 #endif /* CubeObject_hpp */

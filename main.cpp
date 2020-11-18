@@ -31,7 +31,8 @@
 #include "Texture.hpp"
 #include "tests/TestTexture.hpp"
 #include "Vertex.h"
-#include "CubeObject.hpp"
+#include "Entity/CubeObject.hpp"
+#include "Entity/PyramidObject.h"
 #include "Window.hpp"
 #include "Camera.hpp"
 
@@ -47,7 +48,8 @@ int main(int argc, char* argv[]) {
         std::cout << "GLEW Error: " << glewGetErrorString(err) << std::endl;
         return -1;
     }
-    
+
+    // @todo this
     glEnable(GL_DEPTH_TEST);
     
     //
@@ -64,13 +66,20 @@ int main(int argc, char* argv[]) {
     
     // Objects.
     std::vector<Entity*> entities;
-    for(int i = 0; i < 120; i++) {
+    for(int i = 0; i < 20; i++) {
         Entity* ent = new CubeObject;
         ent->setPosition({float(rand() % 60 + (-30)), float(rand() % 60 + (-30)), -float(rand() % 60 + 1)});
         ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
         entities.push_back(ent);
     }
-    
+
+    for(int i = 0; i < 20; i++) {
+        Entity* ent = new PyramidObject;
+        ent->setPosition({float(rand() % 60 + (-30)), float(rand() % 60 + (-30)), -float(rand() % 60 + 1)});
+        ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
+        entities.push_back(ent);
+    }
+
     // Lights.
     std::vector<Entity*> lightObjects;
     glm::vec3 lightPos(0.0f, 40.0f, 0.0f);
@@ -110,7 +119,7 @@ int main(int argc, char* argv[]) {
     texture.Bind(1);
     
     Renderer renderer;
-    Camera camera(45.0f, (float)window.GetWidth()/window.GetHeight(), 0.1f, 120.0f);
+    Camera camera(45.0f, (float)window.GetWidth()/(float)window.GetHeight(), 0.1f, 120.0f);
     
     // ImGui init.
     const char* glsl_version = "#version 150";
@@ -142,15 +151,15 @@ int main(int argc, char* argv[]) {
         {
             static int counter = 0;
 
-            ImGui::Begin("Settings");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("Settings");
 
-            ImGui::Text("Available tests:");               // Display some text (you can use a format strings too)
-            for(int i = 0; i < tests.size(); i++){
-                if (ImGui::Button(tests[i].first.c_str())) {
+            ImGui::Text("Available tests:");
+            for(const auto& test : tests) {
+                if (ImGui::Button(test.first.c_str())) {
                     if (current_test == nullptr){
-                        current_test = tests[i].second();
+                        current_test = test.second();
                     }
-                    else if (current_test->getTestName() == tests[i].first){
+                    else if (current_test->getTestName() == test.first){
                         delete current_test;
                         current_test = nullptr;
                     }
@@ -191,7 +200,7 @@ int main(int argc, char* argv[]) {
             up_angle = angle;
         }
         
-        // Draw objects,
+        // Draw objects.
         va.UpdateVerIndBuffer(entities, vb, ib);
         renderer.Draw(va, ib, lightintShader);
         
