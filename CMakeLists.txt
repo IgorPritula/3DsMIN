@@ -17,7 +17,7 @@ add_subdirectory(vendor/GLFW)
 add_subdirectory(vendor/glm)
 
 if (APPLE)
-    find_library(OPENGL_LIBRARY OpenGL.framework)
+    find_library(OPENGL_LIBRARY NAMES OpenGL.framework OpenGL)
 endif()
 
 add_executable(3DsMIN
