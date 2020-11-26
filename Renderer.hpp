@@ -15,7 +15,12 @@
 #include <vector>
 #include "Entity/Entity.hpp"
 
+// @todo wrap each opengl function in GLCall
+#ifdef __APPLE__
 #define ASSERT(x) if (!x) __asm__("int $3")
+#else
+#define ASSERT(x) if (!x) __asm { int 3 }
+#endif
 #define GLCall(x) GLClearError(); \
 x; \
 ASSERT(GLLogCall(#x, __FILE__, __LINE__))

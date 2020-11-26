@@ -17,6 +17,10 @@
 #include <vector>
 #include <algorithm>
 
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <imgui_impl_glfw.h>
@@ -35,6 +39,15 @@
 #include "Entity/PyramidObject.h"
 #include "Window.hpp"
 #include "Camera.hpp"
+#include "functions.hpp"
+
+#ifdef _WIN32
+// Use the High Performance Graphics.
+extern "C" {
+_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+_declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+#endif
 
 int main(int argc, char* argv[]) {
     // Initialisations of glfw window.
@@ -48,6 +61,10 @@ int main(int argc, char* argv[]) {
         std::cout << "GLEW Error: " << glewGetErrorString(err) << std::endl;
         return -1;
     }
+
+    std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+    std::cout << "GPU: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     // @todo this
     glEnable(GL_DEPTH_TEST);
@@ -225,8 +242,7 @@ int main(int argc, char* argv[]) {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    
-//    GLCall(glfwTerminate());
+
     window.Shutdown();
     return 0;
 }

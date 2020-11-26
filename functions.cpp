@@ -5,6 +5,7 @@
 //  Created by Igor Prytula on 12/30/18.
 //  Copyright © 2018 Ihor Prytula. All rights reserved.
 //
+#include <ctime>
 #include <iostream>
 
 #include "functions.hpp"

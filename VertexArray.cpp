@@ -9,6 +9,7 @@
 #include "VertexArray.hpp"
 #include "VertexBufferLayout.hpp"
 #include <algorithm>
+#include <iterator>
 
 VertexArray::VertexArray() {
      glGenVertexArrays(1, &m_RendererID);
@@ -51,7 +52,7 @@ void VertexArray::UpdateVerIndBuffer(const std::vector<Entity*>& entities, const
         all_vertex.insert(all_vertex.end(), vertexies.begin(), vertexies.end());
         
         std::vector<unsigned int> indeces = entity->getIndeces();
-        std::transform(indeces.begin(), indeces.end(), back_inserter(all_index),
+        std::transform(indeces.begin(), indeces.end(), std::back_inserter(all_index),
         [vertexCount] (unsigned int n) {
             return n+vertexCount;
             
