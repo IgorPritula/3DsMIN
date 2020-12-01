@@ -9,24 +9,8 @@
 #define GL_SILENCE_DEPRECATION
 
 #include "Renderer.hpp"
-#include <iostream>
-#include <GL/glew.h>
 
-void GLClearError()
-{
-    while(GLenum error = glGetError() != GL_NO_ERROR);
-}
-
-bool GLLogCall(const char* function, const char* file, int line)
-{
-    while (GLenum error = glGetError()) {
-        std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
-        return false;
-    }
-    return true;
-}
-
-void Renderer::Draw(const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader) const{
+void Renderer::Draw(const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader) {
     shader.use();
     va.Bind();
     ib.Bind();
@@ -40,8 +24,16 @@ void Renderer::DrawEntities(std::vector<Entity*> &entities, const VertexArray &v
     GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 }
 
-void Renderer::Clear() const {
+void Renderer::Clear() {
 //    glClearColor(57.0 / 255.0, 57.0 / 255.0, 57.0 / 255.0, 0.0f);
     glClearColor(0.0, 0.0, 0.0, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::setViewPort(int x, int y, uint32_t width, uint32_t height) {
+    glViewport(x, y, width, height);
+}
+
+void Renderer::initSettings() {
+    glEnable(GL_DEPTH_TEST);
 }

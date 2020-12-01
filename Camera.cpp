@@ -7,13 +7,22 @@
 //
 
 #include "Camera.hpp"
+#include <GLFW/glfw3.h>
 
 Camera::Camera(float fov, float aspectRatio, float zNear, float zFar) :
-m_lastX(0.0f), m_lastY(0.0f), m_firstMouse(true), m_Yaw(YAW),
-m_Pitch(PITCH), m_Front(glm::vec3(0.0f, 0.0f, -1.0f)), m_Position(glm::vec3(0.0f, 0.0f, 0.0f)), m_WorldUp(glm::vec3(0.0f, 1.0f, 0.0f)), m_Activate(false)
+m_fov(fov), m_zNear(zNear), m_zFar(zFar)
 {
-    m_ProjectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, zNear, zFar);
+    // Initialization.
+    m_firstMouse = true;
+    m_Activate = false;
+    m_Yaw = YAW; m_Pitch = PITCH;
+    m_lastX = m_lastY = 0.0f;
+    m_Front = glm::vec3(0.0f, 0.0f, -1.0f);
+    m_Position = glm::vec3(0.0f);
+    m_WorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     m_ViewMatrix = glm::mat4(1.0f);
+
+    SetProjection(fov, aspectRatio, zNear, zFar);
     updateVPMatrix();
     
     EventDispatcher &eventDisp = EventDispatcher::getInstance();
@@ -25,6 +34,12 @@ m_Pitch(PITCH), m_Front(glm::vec3(0.0f, 0.0f, -1.0f)), m_Position(glm::vec3(0.0f
 void Camera::SetProjection(float fov, float aspectRatio, float zNear, float zFar)
 {
     m_ProjectionMatrix = glm::perspective(glm::radians(fov), aspectRatio, zNear, zFar);
+    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
+
+void Camera::UpdateAspect(float aspectRatio)
+{
+    m_ProjectionMatrix = glm::perspective(glm::radians(m_fov), aspectRatio, m_zNear, m_zFar);
     m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
@@ -125,9 +140,8 @@ void Camera::OnMouseMoved(MouseMovedEvent& event) {
     m_lastX = event.GetX();
     m_lastY = event.GetY();
 
-    const float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+    xoffset *= SENSITIVITY;
+    yoffset *= SENSITIVITY;
     
     m_Yaw   += xoffset;
     m_Pitch += yoffset;
@@ -147,10 +161,3 @@ void Camera::OnMouseMoved(MouseMovedEvent& event) {
     
     updateVPMatrix();
 }
-
-void Camera::OnScreenResize(WindowResizeEvent) { 
-    
-}
-
-
-

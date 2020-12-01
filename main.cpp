@@ -40,6 +40,7 @@
 #include "Window.hpp"
 #include "Camera.hpp"
 #include "functions.hpp"
+#include "Event/WindowEvent.hpp"
 
 #ifdef _WIN32
 // Use the High Performance Graphics.
@@ -66,9 +67,9 @@ int main(int argc, char* argv[]) {
     std::cout << "GPU: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
-    // @todo this
-    glEnable(GL_DEPTH_TEST);
-    
+    Renderer::initSettings();
+    Renderer::setViewPort(0,  0, window.GetWidth(), window.GetHeight());
+
     //
     // Create shader.
     //
@@ -134,10 +135,17 @@ int main(int argc, char* argv[]) {
     // load and create a texture
     Texture texture("res/tnt.png", GL_RGBA);
     texture.Bind(1);
-    
-    Renderer renderer;
+
     Camera camera(45.0f, (float)window.GetWidth()/(float)window.GetHeight(), 0.1f, 120.0f);
-    
+    EventDispatcher &eventDisp = EventDispatcher::getInstance();
+    std::function<void(WindowResizeEvent&)> f = [&window, &camera](WindowResizeEvent& e){
+        float width = e.GetWidth() > DEF_VIEWPORT_W ? e.GetWidth() : DEF_VIEWPORT_W;
+        float height = e.GetHeight() > DEF_VIEWPORT_H ? e.GetHeight() : DEF_VIEWPORT_H;
+        Renderer::setViewPort(0,  0, width, height);
+        camera.UpdateAspect(width/height);
+    };
+    eventDisp.subscribe(EventType::WindowResize, f);
+
     // ImGui init.
     const char* glsl_version = "#version 150";
     IMGUI_CHECKVERSION();
@@ -157,7 +165,7 @@ int main(int argc, char* argv[]) {
     float lastFrame = 0.0f; // Time of last frame
     while(!window.isClose())
     {
-        renderer.Clear();
+        Renderer::Clear();
         lightintShader.use();
     
         ImGui_ImplOpenGL3_NewFrame();
@@ -199,7 +207,7 @@ int main(int argc, char* argv[]) {
             if (current_test != nullptr)
                 current_test->OnImGuiRender();
         }
-        
+
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -219,14 +227,14 @@ int main(int argc, char* argv[]) {
         
         // Draw objects.
         va.UpdateVerIndBuffer(entities, vb, ib);
-        renderer.Draw(va, ib, lightintShader);
+        Renderer::Draw(va, ib, lightintShader);
         
         // Draw lights.
         lightSourseShader.use();
         lightSourseShader.setMatrix4fv("perspective", perspective);
 
         va.UpdateVerIndBuffer(lightObjects, vb, ib);
-        renderer.Draw(va, ib, lightSourseShader);
+        Renderer::Draw(va, ib, lightSourseShader);
         
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

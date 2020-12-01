@@ -22,7 +22,7 @@
 enum EventType {
     KeyPressed, KeyReleased,
     MouseMoved,
-    FramebufferResize, WindowResize
+    FramebufferResize, WindowResize, WindowMove
 };
 
 class Event {

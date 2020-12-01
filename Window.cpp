@@ -30,8 +30,7 @@ void Window::Init(const WindowProps& props) {
     m_Data.Title = props.Title;
     m_Data.Width = props.Width;
     m_Data.Height = props.Height;
-    m_Data.windowPoiter = this;
-    
+    m_Data.windowPointer = this;
     if (s_GLFWWindowCount == 0)
     {
         int success = glfwInit();
@@ -43,6 +42,7 @@ void Window::Init(const WindowProps& props) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, false);
 #endif
     // Create window.
     m_Window = glfwCreateWindow(props.Width, props.Height, props.Title.c_str(), NULL, NULL);
@@ -62,9 +62,13 @@ void Window::Init(const WindowProps& props) {
     // Set GLFW callbacks
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
     {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-        data.Width = width;
-        data.Height = height;
+//        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+//        data.Width = width;
+//        data.Height = height;
+
+//        WindowResizeEvent event(width, height);
+//        EventDispatcher &eventDis = EventDispatcher::getInstance();
+//        eventDis.dispatch(event);
     });
     
     glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
@@ -72,10 +76,22 @@ void Window::Init(const WindowProps& props) {
         // make sure the viewport matches the new window dimensions; note that width and
         // height will be significantly larger than specified on retina displays.
         WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+        data.Width = width;
+        data.Height = height;
 
-        data.windowPoiter->setViewPort(width, height);
+        WindowResizeEvent event(window, width, height);
+        EventDispatcher &eventDis = EventDispatcher::getInstance();
+        eventDis.dispatch(event);
     });
-    
+
+    glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int xpos, int ypos) {
+        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+        WindowMoveEvent event(xpos, ypos);
+        EventDispatcher &eventDis = EventDispatcher::getInstance();
+        eventDis.dispatch(event);
+    });
+
     glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         EventDispatcher &eventDis = EventDispatcher::getInstance();
@@ -116,8 +132,7 @@ void Window::Init(const WindowProps& props) {
         EventDispatcher &eventDis = EventDispatcher::getInstance();
         eventDis.dispatch(event);
     });
-    
-    setViewPort(props.Width, props.Height);
+
 }
 
 bool Window::isClose() const {
@@ -165,10 +180,3 @@ void Window::SetVSync(bool enabled) {
 bool Window::IsVSync() const { 
     return m_Data.VSync;
 }
-
-void Window::setViewPort(unsigned int width, unsigned int height) {
-    glViewport(0, 0, width, height);
-}
-
-
-

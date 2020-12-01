@@ -11,9 +11,9 @@
 
 #include <stdio.h>
 #include <cmath>
-#include <GLFW/glfw3.h>
 #include <functional>
 #include <glm/gtc/matrix_transform.hpp>
+#include "functions.hpp"
 #include "Vertex.h"
 #include "Event/Event.hpp"
 #include "Event/KeyEvent.hpp"
@@ -42,7 +42,7 @@ class Camera {
 public:
     Camera(float fov, float aspectRatio, float zNear, float zFar);
     void SetProjection(float fov, float aspectRatio, float zNear, float zFar);
-    
+    void UpdateAspect(float aspectRatio);
     glm::mat4 GetViewProjectionMatrix() { return m_ViewProjectionMatrix; };
     
     void OnUpdate(float);
@@ -52,18 +52,21 @@ public:
     void OnMouseMoved(MouseMovedEvent&);
     void OnKeyPressed(KeyPressedEvent&);
     void OnKeyReleased(KeyReleasedEvent&);
-    void OnScreenResize(WindowResizeEvent);
 private:
         void updateVPMatrix();
 private:
+    float m_fov, m_zNear, m_zFar;
+
+    // Camera status.
     bool m_Activate;
     // Angles.
     float m_Yaw, m_Pitch;
-    
+
+    // Mouse attributes.
     float m_lastX, m_lastY;
     bool m_firstMouse;
     
-    // camera Attributes
+    // Camera attributes.
     glm::vec3 m_Position;
     glm::vec3 m_Front;
     glm::vec3 m_Up;

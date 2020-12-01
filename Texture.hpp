@@ -10,7 +10,8 @@
 #define Texture_hpp
 
 #include <stdio.h>
-#include "Renderer.hpp"
+#include <string>
+#include "functions.hpp"
 
 class Texture {
 private:

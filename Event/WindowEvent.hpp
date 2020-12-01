@@ -11,18 +11,34 @@
 
 #include <stdio.h>
 #include "Event.hpp"
+#include <GLFW/glfw3.h>
 
 class WindowResizeEvent : public Event {
 public:
-    WindowResizeEvent(unsigned int width, unsigned int height)
-        : m_Width(width), m_Height(height) {}
+    WindowResizeEvent(GLFWwindow* window, unsigned int width, unsigned int height)
+        : m_Window(window), m_Width(width), m_Height(height) {}
 
-    unsigned int GetWidth() const { return m_Width; }
-    unsigned int GetHeight() const { return m_Height; }
+    GLFWwindow* getWindow() const { return m_Window; }
+    uint32_t GetWidth() const { return m_Width; }
+    uint32_t GetHeight() const { return m_Height; }
     
     EVENT_CLASS_TYPE(WindowResize)
 private:
     unsigned int m_Width, m_Height;
+    GLFWwindow* m_Window;
+};
+
+class WindowMoveEvent : public Event {
+public:
+    WindowMoveEvent(int xPos, int yPos)
+            : m_xPos(xPos), m_yPos(yPos) {}
+
+     int GetXPos() const { return m_xPos; }
+     int GetYPos() const { return m_yPos; }
+
+    EVENT_CLASS_TYPE(WindowMove)
+private:
+    int m_xPos, m_yPos;
 };
 
 #endif /* WindowEvent_hpp */

@@ -25,8 +25,8 @@ struct WindowProps
     uint32_t Height;
 
     WindowProps(const std::string& title = "3Ds MIN",
-                uint32_t width = 1280,
-                uint32_t height = 720)
+                uint32_t width = 1024,
+                uint32_t height = 768)
         : Title(title), Width(width), Height(height)
     {
     }
@@ -41,7 +41,6 @@ public:
     void SetVSync(bool);
     bool IsVSync() const;
     GLFWwindow* GetNativeWindow() const { return m_Window; }
-    void setViewPort(unsigned int, unsigned int);
     void Shutdown();
     void OnUpdate();
     bool isClose() const;
@@ -51,10 +50,10 @@ private:
     struct WindowData
     {
         std::string Title;
-        unsigned int Width, Height;
+        uint32_t Width, Height;
         bool VSync;
 
-        Window* windowPoiter;
+        Window* windowPointer;
     };
 
     WindowData m_Data;

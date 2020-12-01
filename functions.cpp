@@ -5,10 +5,26 @@
 //  Created by Igor Prytula on 12/30/18.
 //  Copyright © 2018 Ihor Prytula. All rights reserved.
 //
+#include "functions.hpp"
+
 #include <ctime>
 #include <iostream>
 
-#include "functions.hpp"
+#include <GL/glew.h>
+
+void GLClearError()
+{
+    while(GLenum error = glGetError() != GL_NO_ERROR);
+}
+
+bool GLLogCall(const char* function, const char* file, int line)
+{
+    while (GLenum error = glGetError()) {
+        std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
+        return false;
+    }
+    return true;
+}
 
 void showFps() {
     // Init static veriables

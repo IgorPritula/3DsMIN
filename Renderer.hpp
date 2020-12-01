@@ -9,30 +9,22 @@
 #ifndef Renderer_hpp
 #define Renderer_hpp
 
+#include <iostream>
+#include <GL/glew.h>
 #include "ShaderManager.hpp"
 #include "IndexBuffer.hpp"
 #include "VertexArray.hpp"
 #include <vector>
 #include "Entity/Entity.hpp"
-
-// @todo wrap each opengl function in GLCall
-#ifdef __APPLE__
-#define ASSERT(x) if (!x) __asm__("int $3")
-#else
-#define ASSERT(x) if (!x) __asm { int 3 }
-#endif
-#define GLCall(x) GLClearError(); \
-x; \
-ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-
-void GLClearError();
-
-bool GLLogCall(const char*, const char*, int);
+#include "Event/WindowEvent.hpp"
+#include "functions.hpp"
 
 class Renderer {
 public:
-    void Draw(const VertexArray& va, const IndexBuffer& ib, ShaderManager& shader) const;
-    void DrawEntities(std::vector<Entity*> &entities, const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader);
-    void Clear() const;
+    static void Draw(const VertexArray& va, const IndexBuffer& ib, ShaderManager& shader);
+    static void DrawEntities(std::vector<Entity*> &entities, const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader);
+    static void Clear();
+    static void setViewPort(int, int, uint32_t, uint32_t);
+    static void initSettings();
 };
 #endif /* Renderer_hpp */

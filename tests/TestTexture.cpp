@@ -8,6 +8,7 @@
 
 #include "TestTexture.hpp"
 
+#include <GL/glew.h>
 
 namespace test {
 
