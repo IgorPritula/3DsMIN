@@ -41,6 +41,7 @@
 #include "Camera.hpp"
 #include "functions.hpp"
 #include "Event/WindowEvent.hpp"
+#include "ImGui/ImGuiUI.h"
 
 #ifdef _WIN32
 // Use the High Performance Graphics.
@@ -84,23 +85,27 @@ int main(int argc, char* argv[]) {
     
     // Objects.
     std::vector<Entity*> entities;
-    for(int i = 0; i < 20; i++) {
-        Entity* ent = new CubeObject;
-        ent->setPosition({float(rand() % 60 + (-30)), float(rand() % 60 + (-30)), -float(rand() % 60 + 1)});
-        ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
-        entities.push_back(ent);
+    for(int i = 1; i <= 6; i++) {
+        for(int j = 1; j <= 6; j++) {
+            for(int k = 1; k <= 6; k++) {
+                Entity *ent = new CubeObject;
+                ent->setPosition({(float)k * 5.0 - 17.5, (float)j * 5 - 17.5, (float)i * -5 - 20.0});
+//                ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
+                entities.push_back(ent);
+            }
+        }
     }
 
-    for(int i = 0; i < 20; i++) {
-        Entity* ent = new PyramidObject;
-        ent->setPosition({float(rand() % 60 + (-30)), float(rand() % 60 + (-30)), -float(rand() % 60 + 1)});
-        ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
-        entities.push_back(ent);
-    }
+//    for(int i = 0; i < 20; i++) {
+//        Entity* ent = new PyramidObject;
+//        ent->setPosition({float(rand() % 60 + (-30)), float(rand() % 60 + (-30)), -float(rand() % 60 + 1)});
+//        ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
+//        entities.push_back(ent);
+//    }
 
     // Lights.
     std::vector<Entity*> lightObjects;
-    glm::vec3 lightPos(0.0f, 40.0f, 0.0f);
+    glm::vec3 lightPos(-30.0f, 0.0f, -37.5f);
     Entity* lightCube = new CubeObject("White Lamp");
     lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
     lightCube->setPosition(lightPos);
@@ -147,66 +152,17 @@ int main(int argc, char* argv[]) {
     eventDisp.subscribe(EventType::WindowResize, f);
 
     // ImGui init.
-    const char* glsl_version = "#version 150";
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window.GetNativeWindow(), true);
-    ImGui::StyleColorsDark();
-    ImGui_ImplOpenGL3_Init(glsl_version);
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    
-    // Tests.
-    std::vector<std::pair<std::string, std::function<test::Test*()>>> tests;
-    tests.push_back(std::make_pair("Texture", []() {return new test::TestTexture(1);}));
-    test::Test* current_test = nullptr;
-    int angle = 0;
-    
+    ImGuiUI imgui(&window);
+
     float deltaTime = 0.0f;    // Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame
     while(!window.isClose())
     {
         Renderer::Clear();
         lightintShader.use();
-    
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        
-        // Main ImGui window.
-        {
-            static int counter = 0;
 
-            ImGui::Begin("Settings");
-
-            ImGui::Text("Available tests:");
-            for(const auto& test : tests) {
-                if (ImGui::Button(test.first.c_str())) {
-                    if (current_test == nullptr){
-                        current_test = test.second();
-                    }
-                    else if (current_test->getTestName() == test.first){
-                        delete current_test;
-                        current_test = nullptr;
-                    }
-                }
-            }
-                
-            ImGui::SliderInt("Degrees", &angle, 0, 360); // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-            
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-            ImGui::Text("CURRENT_WIDTH = %d", window.GetWidth());
-            ImGui::Text("CURRENT_HEIGHT = %d", window.GetHeight());
-            
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-        // Render ImGui tests windiws.
-        {
-            if (current_test != nullptr)
-                current_test->OnImGuiRender();
-        }
+        imgui.Begin();
+        imgui.Render(entities, lightObjects);
 
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -215,15 +171,7 @@ int main(int argc, char* argv[]) {
         camera.OnUpdate(deltaTime);
         glm::mat4 perspective = camera.GetViewProjectionMatrix();
         lightintShader.setMatrix4fv("perspective", perspective);
-        
-
-        static int up_angle = 0;
-        if (up_angle != angle) {
-            std::for_each(entities.begin(), entities.end(), [angle](Entity* &n) {
-                n->setRotation(angle, glm::vec3(0.0f, 1.0f, 0.0f));
-            });
-            up_angle = angle;
-        }
+        lightintShader.setVec3("lightPos", lightCube->getPosition());
         
         // Draw objects.
         va.UpdateVerIndBuffer(entities, vb, ib);
@@ -235,9 +183,8 @@ int main(int argc, char* argv[]) {
 
         va.UpdateVerIndBuffer(lightObjects, vb, ib);
         Renderer::Draw(va, ib, lightSourseShader);
-        
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        imgui.End();
         
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         window.OnUpdate();
@@ -245,11 +192,8 @@ int main(int argc, char* argv[]) {
             showFps();
         #endif
     }
-    
-    
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
+
+    imgui.DestroyContext();
 
     window.Shutdown();
     return 0;

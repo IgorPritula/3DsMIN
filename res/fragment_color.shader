@@ -22,7 +22,7 @@ void main()
     // diffuse
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(lightPos - FragPos);
-    float diff = max(dot(norm, lightDir), 0.3);
+    float diff = max(dot(norm, lightDir), 0.01);
     vec4 diffuse = diff * lightColor;
     if (int(TexID) < 0) {
         FragColor = (ambient + diffuse) * Color;

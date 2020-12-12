@@ -4,6 +4,7 @@ project(3DsMIN)
 set(CMAKE_CXX_STANDARD 14)
 
 FILE(COPY res DESTINATION "${CMAKE_BINARY_DIR}")
+FILE(COPY res/imgui.ini DESTINATION "${CMAKE_BINARY_DIR}")
 
 include_directories(.)
 include_directories(vendor/GLFW/include)
@@ -41,7 +42,7 @@ add_executable(3DsMIN
         VertexArray.cpp
         VertexBuffer.cpp
         VertexBufferLayout.cpp
-        Window.cpp)
+        Window.cpp ImGui/ImGuiUI.cpp ImGui/ImGuiUI.h)
 
 target_link_libraries(3DsMIN glfw)
 target_link_libraries(3DsMIN ${OPENGL_LIBRARY})

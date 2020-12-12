@@ -42,6 +42,7 @@ class Camera {
 public:
     Camera(float fov, float aspectRatio, float zNear, float zFar);
     void SetProjection(float fov, float aspectRatio, float zNear, float zFar);
+    inline void SetPosition(glm::vec3 pos) {m_Position = pos;};
     void UpdateAspect(float aspectRatio);
     glm::mat4 GetViewProjectionMatrix() { return m_ViewProjectionMatrix; };
     

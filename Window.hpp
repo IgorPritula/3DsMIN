@@ -38,12 +38,14 @@ public:
     void Init(const WindowProps&);
     unsigned int GetWidth() const { return m_Data.Width; }
     unsigned int GetHeight() const { return m_Data.Height; }
+    std::string GetTitle() const { return m_Data.Title; }
     void SetVSync(bool);
     bool IsVSync() const;
     GLFWwindow* GetNativeWindow() const { return m_Window; }
     void Shutdown();
     void OnUpdate();
     bool isClose() const;
+    void closeWindow();
 private:
     GLFWwindow* m_Window;
     

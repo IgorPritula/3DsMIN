@@ -95,10 +95,6 @@ void Window::Init(const WindowProps& props) {
     glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         EventDispatcher &eventDis = EventDispatcher::getInstance();
-        // @todo remove this code and replace with event system.
-        if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
-        
         
         if(key == GLFW_KEY_M && action == GLFW_PRESS) {
             int cursor = glfwGetInputMode(window, GLFW_CURSOR);
@@ -179,4 +175,8 @@ void Window::SetVSync(bool enabled) {
 
 bool Window::IsVSync() const { 
     return m_Data.VSync;
+}
+
+void Window::closeWindow() {
+    glfwSetWindowShouldClose(m_Window, true);
 }
