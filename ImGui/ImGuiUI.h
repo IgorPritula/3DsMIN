@@ -6,14 +6,14 @@
 #define INC_3DSMIN_IMGUIUI_H
 
 #include <vector>
-
 #include "Window.hpp"
 #include "Entity/Entity.hpp"
 #include "tests/Test.hpp"
+#include "Framebuffer.h"
 
 class ImGuiUI {
 public:
-    ImGuiUI(Window* window);
+    ImGuiUI(Window* window, Framebuffer*);
     void Init();
     void DestroyContext();
     void Begin();
@@ -23,11 +23,13 @@ private:
 
     Window* m_window;
     Entity* m_selectedEntity;
+    Framebuffer* m_Framebuffer;
 
     // Tests
     std::vector<std::pair<std::string, std::function<test::Test*()>>> m_tests;
     test::Test* m_current_test;
 
+    float m_ViewportWidth, m_ViewportHeight;
 };
 
 

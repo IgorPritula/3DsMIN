@@ -42,7 +42,9 @@ add_executable(3DsMIN
         VertexArray.cpp
         VertexBuffer.cpp
         VertexBufferLayout.cpp
-        Window.cpp ImGui/ImGuiUI.cpp ImGui/ImGuiUI.h)
+        Window.cpp
+        ImGui/ImGuiUI.cpp
+        Framebuffer.cpp)
 
 target_link_libraries(3DsMIN glfw)
 target_link_libraries(3DsMIN ${OPENGL_LIBRARY})

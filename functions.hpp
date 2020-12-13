@@ -11,8 +11,8 @@
 
 #include <stdio.h>
 
-#define DEF_VIEWPORT_W 1024
-#define DEF_VIEWPORT_H 768
+#define DEF_VIEWPORT_W 600
+#define DEF_VIEWPORT_H 600
 
 // @todo wrap each opengl function in GLCall
 #ifdef __APPLE__

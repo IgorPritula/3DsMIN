@@ -4,14 +4,16 @@
 
 #include "ImGuiUI.h"
 
+#include <sstream>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "tests/TestTexture.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#include <sstream>
+#include "functions.hpp"
+#include "tests/TestTexture.hpp"
+#include "Event/WindowEvent.hpp"
 
-ImGuiUI::ImGuiUI(Window *window) : m_window(window), m_selectedEntity(nullptr) {
+ImGuiUI::ImGuiUI(Window *window, Framebuffer* fr) : m_window(window), m_Framebuffer(fr), m_selectedEntity(nullptr) {
     Init();
     // Tests. @todo split into separate class.
     m_tests.push_back(std::make_pair("Texture", []() {return new test::TestTexture(1);}));
@@ -149,5 +151,24 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
 
     if (m_current_test != nullptr)
         m_current_test->OnImGuiRender();
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+    ImGui::Begin("Viewport");
+
+    ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+    if(viewportPanelSize.x != m_ViewportWidth || viewportPanelSize.y != m_ViewportHeight) {
+        m_ViewportWidth = viewportPanelSize.x > DEF_VIEWPORT_W ? viewportPanelSize.x : DEF_VIEWPORT_W;
+        m_ViewportHeight = viewportPanelSize.y > DEF_VIEWPORT_H ? viewportPanelSize.y : DEF_VIEWPORT_H;
+//        m_ViewportWidth = viewportPanelSize.x;
+//        m_ViewportHeight = viewportPanelSize.y;
+
+        ImGuiViewportResizeEvent event(m_ViewportWidth, m_ViewportHeight);
+        EventDispatcher &eventDis = EventDispatcher::getInstance();
+        eventDis.dispatch(event);
+    }
+    unsigned int textureID = m_Framebuffer->getTextureColorBuffer();
+    ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ m_ViewportWidth, m_ViewportHeight }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+    ImGui::End();
+    ImGui::PopStyleVar();
 }
 

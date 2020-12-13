@@ -11,20 +11,20 @@
 //#define SHOW_FPS
 //#define DIS_V_SYNC
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <iostream>
-#include <GL/glew.h>
-#include <glm/glm.hpp>
 #include <vector>
 #include <algorithm>
-
-#ifdef _WIN32
-    #include <windows.h>
-#endif
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 
 #include "Renderer.hpp"
 #include "ShaderManager.hpp"
@@ -42,6 +42,7 @@
 #include "functions.hpp"
 #include "Event/WindowEvent.hpp"
 #include "ImGui/ImGuiUI.h"
+#include "Framebuffer.h"
 
 #ifdef _WIN32
 // Use the High Performance Graphics.
@@ -69,7 +70,7 @@ int main(int argc, char* argv[]) {
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     Renderer::initSettings();
-    Renderer::setViewPort(0,  0, window.GetWidth(), window.GetHeight());
+    Renderer::setViewPort(0,  0, DEF_VIEWPORT_W, DEF_VIEWPORT_H);
 
     //
     // Create shader.
@@ -78,7 +79,7 @@ int main(int argc, char* argv[]) {
     ShaderManager lightintShader("res/vertex_color.shader", "res/fragment_color.shader");
     lightintShader.use();
     lightintShader.setMatrix4fv("transform", glm::mat4(1.0f));
-    // Light sourse shader.
+    // Light sours shader.
     ShaderManager lightSourseShader("res/vertex_color.shader", "res/light_fragment.shader");
     lightSourseShader.use();
     lightSourseShader.setMatrix4fv("transform", glm::mat4(1.0f));
@@ -141,51 +142,64 @@ int main(int argc, char* argv[]) {
     Texture texture("res/tnt.png", GL_RGBA);
     texture.Bind(1);
 
-    Camera camera(45.0f, (float)window.GetWidth()/(float)window.GetHeight(), 0.1f, 120.0f);
+    Camera camera(45.0f, (float)DEF_VIEWPORT_W/(float)DEF_VIEWPORT_W, 0.1f, 120.0f);
+
+    // Framebuffer
+    Framebuffer framebuffer(DEF_VIEWPORT_W, DEF_VIEWPORT_W);
+
+    // ImGui init.
+    ImGuiUI imgui(&window, &framebuffer);
+
     EventDispatcher &eventDisp = EventDispatcher::getInstance();
-    std::function<void(WindowResizeEvent&)> f = [&window, &camera](WindowResizeEvent& e){
+    std::function<void(ImGuiViewportResizeEvent&)> f = [&camera, &framebuffer](ImGuiViewportResizeEvent& e){
         float width = e.GetWidth() > DEF_VIEWPORT_W ? e.GetWidth() : DEF_VIEWPORT_W;
         float height = e.GetHeight() > DEF_VIEWPORT_H ? e.GetHeight() : DEF_VIEWPORT_H;
         Renderer::setViewPort(0,  0, width, height);
         camera.UpdateAspect(width/height);
+        framebuffer.Resize(width, height);
     };
-    eventDisp.subscribe(EventType::WindowResize, f);
-
-    // ImGui init.
-    ImGuiUI imgui(&window);
+    eventDisp.subscribe(EventType::ImGuiViewportResize, f);
 
     float deltaTime = 0.0f;    // Time between current frame and last frame
     float lastFrame = 0.0f; // Time of last frame
     while(!window.isClose())
     {
+        //
+        // Custom framebuffer.
+        //
+        framebuffer.Bind();
         Renderer::Clear();
         lightintShader.use();
-
-        imgui.Begin();
-        imgui.Render(entities, lightObjects);
 
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        
+
         camera.OnUpdate(deltaTime);
         glm::mat4 perspective = camera.GetViewProjectionMatrix();
         lightintShader.setMatrix4fv("perspective", perspective);
         lightintShader.setVec3("lightPos", lightCube->getPosition());
-        
+
         // Draw objects.
         va.UpdateVerIndBuffer(entities, vb, ib);
         Renderer::Draw(va, ib, lightintShader);
-        
+
         // Draw lights.
         lightSourseShader.use();
         lightSourseShader.setMatrix4fv("perspective", perspective);
 
         va.UpdateVerIndBuffer(lightObjects, vb, ib);
         Renderer::Draw(va, ib, lightSourseShader);
+        framebuffer.Unbind();
 
+        //
+        // ImGui render.
+        //
+        Renderer::Clear();
+        imgui.Begin();
+        imgui.Render(entities, lightObjects);
         imgui.End();
-        
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         window.OnUpdate();
         #ifdef SHOW_FPS

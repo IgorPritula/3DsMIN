@@ -10,10 +10,10 @@
 #define Event_hpp
 
 #include <stdio.h>
-#include "Event.hpp"
 #include <unordered_map>
 #include <vector>
 #include <functional>
+#include "Event.hpp"
 
 #define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\
                                 EventType GetEventType() const override { return EventType::type; }\
@@ -22,7 +22,8 @@
 enum EventType {
     KeyPressed, KeyReleased,
     MouseMoved,
-    FramebufferResize, WindowResize, WindowMove
+    FramebufferResize, WindowResize, WindowMove,
+    ImGuiViewportResize
 };
 
 class Event {

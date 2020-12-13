@@ -10,8 +10,8 @@
 #define WindowEvent_hpp
 
 #include <stdio.h>
-#include "Event.hpp"
 #include <GLFW/glfw3.h>
+#include "Event.hpp"
 
 class WindowResizeEvent : public Event {
 public:
@@ -39,6 +39,19 @@ public:
     EVENT_CLASS_TYPE(WindowMove)
 private:
     int m_xPos, m_yPos;
+};
+
+class ImGuiViewportResizeEvent : public Event {
+public:
+    ImGuiViewportResizeEvent(unsigned int width, unsigned int height)
+            : m_Width(width), m_Height(height) {}
+
+    uint32_t GetWidth() const { return m_Width; }
+    uint32_t GetHeight() const { return m_Height; }
+
+    EVENT_CLASS_TYPE(ImGuiViewportResize)
+private:
+    unsigned int m_Width, m_Height;
 };
 
 #endif /* WindowEvent_hpp */
