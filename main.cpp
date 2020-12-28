@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
     Framebuffer framebuffer(DEF_VIEWPORT_W, DEF_VIEWPORT_W);
 
     // ImGui init.
-    ImGuiUI imgui(&window, &framebuffer);
+    ImGuiUI imgui(&window, &framebuffer, &camera);
 
     EventDispatcher &eventDisp = EventDispatcher::getInstance();
     std::function<void(ImGuiViewportResizeEvent&)> f = [&camera, &framebuffer](ImGuiViewportResizeEvent& e){

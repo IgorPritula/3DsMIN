@@ -35,7 +35,7 @@ static const float pyramid_vertices[] = {
 
 class PyramidObject : public Entity {
 public:
-    PyramidObject(std::string name = "Pyramid") : Entity(name) {
+    PyramidObject(std::string name = "Pyramid") : Entity(std::move(name)) {
         m_Vertices.resize(sizeof(pyramid_vertices)/(sizeof(float) * 5));
         for (int i = 0; i < m_Vertices.size(); i++) {
             int vertex = 8 * i;

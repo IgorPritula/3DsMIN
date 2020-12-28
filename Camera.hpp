@@ -53,6 +53,11 @@ public:
     void OnMouseMoved(MouseMovedEvent&);
     void OnKeyPressed(KeyPressedEvent&);
     void OnKeyReleased(KeyReleasedEvent&);
+
+    bool IsActive() const { return m_Activate;}
+    void ActivateCamera() { m_Activate = true; m_firstMouse = m_Activate;}
+    void DisactivateCamera() { m_Activate = false; m_firstMouse = m_Activate;}
+
 private:
         void updateVPMatrix();
 private:

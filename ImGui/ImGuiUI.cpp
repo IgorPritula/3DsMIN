@@ -13,7 +13,18 @@
 #include "tests/TestTexture.hpp"
 #include "Event/WindowEvent.hpp"
 
-ImGuiUI::ImGuiUI(Window *window, Framebuffer* fr) : m_window(window), m_Framebuffer(fr), m_selectedEntity(nullptr) {
+struct ImGuiViewportDataGlfw
+{
+    GLFWwindow* Window;
+    bool        WindowOwned;
+    int         IgnoreWindowPosEventFrame;
+    int         IgnoreWindowSizeEventFrame;
+
+    ImGuiViewportDataGlfw()  { Window = NULL; WindowOwned = false; IgnoreWindowSizeEventFrame = IgnoreWindowPosEventFrame = -1; }
+    ~ImGuiViewportDataGlfw() { IM_ASSERT(Window == NULL); }
+};
+
+ImGuiUI::ImGuiUI(Window *window, Framebuffer* fr, Camera* camera) : m_window(window), m_Framebuffer(fr), m_Camera(camera), m_selectedEntity(nullptr) {
     Init();
     // Tests. @todo split into separate class.
     m_tests.push_back(std::make_pair("Texture", []() {return new test::TestTexture(1);}));
@@ -24,7 +35,7 @@ void ImGuiUI::Init() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO(); //(void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
@@ -115,7 +126,7 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
     for (auto entity : entities) {
         std::ostringstream label;
         label << entity->getName() << "##" << count;
-        if (ImGui::Selectable(label.str().c_str(), &(*m_selectedEntity) == &(*entity)))
+        if (ImGui::Selectable(label.str().c_str(), m_selectedEntity == entity))
             m_selectedEntity = entity;
         count++;
     }
@@ -152,15 +163,51 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
     if (m_current_test != nullptr)
         m_current_test->OnImGuiRender();
 
+    Viewport();
+}
+
+void ImGuiUI::Viewport() {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
     ImGui::Begin("Viewport");
+
+    ImGuiViewport* viewport = ImGui::GetWindowViewport();
+    auto data = (ImGuiViewportDataGlfw*)viewport->PlatformUserData;
+    static GLFWwindow* vp_windows = m_window->GetNativeWindow();
+    if (data && vp_windows != data->Window) {
+        vp_windows = data->Window;
+        // Set callback for new window created by imgui docking.
+        if (vp_windows != m_window->GetNativeWindow()) {
+            glfwSetKeyCallback(vp_windows, ImGuiUI::KeyCallback);
+            glfwSetCursorPosCallback(vp_windows, Window::CursorPosCallback);
+        }
+    }
+
+    if (m_Camera->IsActive())
+        ImGui::SetWindowFocus();
+
+    if(ImGui::IsWindowFocused() && ImGui::IsKeyPressed(GLFW_KEY_M)) {
+        ImGuiIO& io = ImGui::GetIO();
+        if (m_Camera->IsActive()) {
+            m_Camera->DisactivateCamera();
+            // Show cursor.
+            io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+            io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
+            ImGui::SetMouseCursor(1);
+            glfwSetInputMode(vp_windows, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else {
+            m_Camera->ActivateCamera();
+            // Hide cursor.
+            io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+            io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+            ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+            glfwSetInputMode(vp_windows, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+    }
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     if(viewportPanelSize.x != m_ViewportWidth || viewportPanelSize.y != m_ViewportHeight) {
         m_ViewportWidth = viewportPanelSize.x > DEF_VIEWPORT_W ? viewportPanelSize.x : DEF_VIEWPORT_W;
         m_ViewportHeight = viewportPanelSize.y > DEF_VIEWPORT_H ? viewportPanelSize.y : DEF_VIEWPORT_H;
-//        m_ViewportWidth = viewportPanelSize.x;
-//        m_ViewportHeight = viewportPanelSize.y;
 
         ImGuiViewportResizeEvent event(m_ViewportWidth, m_ViewportHeight);
         EventDispatcher &eventDis = EventDispatcher::getInstance();
@@ -171,4 +218,10 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
     ImGui::End();
     ImGui::PopStyleVar();
 }
+
+void ImGuiUI::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+    Window::KeyCallback(window, key, scancode, action, mods);
+}
+
 

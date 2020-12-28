@@ -54,80 +54,17 @@ void Window::Init(const WindowProps& props) {
     }
     s_GLFWWindowCount++;
     glfwSetWindowUserPointer(m_Window, &m_Data);
-    
+
     // Set window as current context.
     glfwMakeContextCurrent(m_Window);
     SetVSync(true);
     
     // Set GLFW callbacks
-    glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-    {
-//        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-//        data.Width = width;
-//        data.Height = height;
-
-//        WindowResizeEvent event(width, height);
-//        EventDispatcher &eventDis = EventDispatcher::getInstance();
-//        eventDis.dispatch(event);
-    });
-    
-    glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-    {
-        // make sure the viewport matches the new window dimensions; note that width and
-        // height will be significantly larger than specified on retina displays.
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-        data.Width = width;
-        data.Height = height;
-
-        WindowResizeEvent event(window, width, height);
-        EventDispatcher &eventDis = EventDispatcher::getInstance();
-        eventDis.dispatch(event);
-    });
-
-    glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int xpos, int ypos) {
-        WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-        WindowMoveEvent event(xpos, ypos);
-        EventDispatcher &eventDis = EventDispatcher::getInstance();
-        eventDis.dispatch(event);
-    });
-
-    glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        EventDispatcher &eventDis = EventDispatcher::getInstance();
-        
-        if(key == GLFW_KEY_M && action == GLFW_PRESS) {
-            int cursor = glfwGetInputMode(window, GLFW_CURSOR);
-            if (cursor == GLFW_CURSOR_DISABLED) {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            }
-            else {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            }
-        }
-    
-        switch (action) {
-            case GLFW_PRESS:
-            {
-                KeyPressedEvent event(key);
-                eventDis.dispatch(event);
-            }
-                break;
-            case GLFW_RELEASE:
-            {
-                KeyReleasedEvent event(key);
-                eventDis.dispatch(event);
-            }
-                break;
-        }
-    });
-    
-    glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-    {
-        MouseMovedEvent event((float)xPos, (float)yPos);
-        EventDispatcher &eventDis = EventDispatcher::getInstance();
-        eventDis.dispatch(event);
-    });
+    glfwSetWindowSizeCallback(m_Window, Window::WindowSizeCallback);
+    glfwSetFramebufferSizeCallback(m_Window, Window::FramebufferSizeCallback);
+    glfwSetWindowPosCallback(m_Window, Window::WindowPosCallback);
+    glfwSetKeyCallback(m_Window, Window::KeyCallback);
+    glfwSetCursorPosCallback(m_Window, Window::CursorPosCallback);
 
 }
 
@@ -172,11 +109,67 @@ void Window::SetVSync(bool enabled) {
     m_Data.VSync = enabled;
 }
 
-
-bool Window::IsVSync() const { 
-    return m_Data.VSync;
-}
-
 void Window::closeWindow() {
     glfwSetWindowShouldClose(m_Window, true);
+}
+
+void Window::WindowSizeCallback(GLFWwindow *window, int width, int height) {
+
+}
+
+void Window::FramebufferSizeCallback(GLFWwindow *window, int width, int height) {
+    // make sure the viewport matches the new window dimensions; note that width and
+    // height will be significantly larger than specified on retina displays.
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+    data.Width = width;
+    data.Height = height;
+
+    WindowResizeEvent event(window, width, height);
+    EventDispatcher &eventDis = EventDispatcher::getInstance();
+    eventDis.dispatch(event);
+}
+
+void Window::WindowPosCallback(GLFWwindow *window, int xpos, int ypos) {
+    WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+    WindowMoveEvent event(xpos, ypos);
+    EventDispatcher &eventDis = EventDispatcher::getInstance();
+    eventDis.dispatch(event);
+}
+
+void Window::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    EventDispatcher &eventDis = EventDispatcher::getInstance();
+
+    switch (action) {
+        case GLFW_PRESS:
+        {
+            KeyPressedEvent event(key);
+            eventDis.dispatch(event);
+        }
+            break;
+        case GLFW_RELEASE:
+        {
+            KeyReleasedEvent event(key);
+            eventDis.dispatch(event);
+        }
+            break;
+    }
+}
+
+void Window::CursorPosCallback(GLFWwindow *window, double xPos, double yPos) {
+    MouseMovedEvent event((float)xPos, (float)yPos);
+    EventDispatcher &eventDis = EventDispatcher::getInstance();
+    eventDis.dispatch(event);
+}
+
+bool Window::isKeyPressed(int key) {
+    return glfwGetKey(m_Window, key) == GLFW_PRESS;
+}
+
+void Window::DisableCursor() {
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void Window::EnableCursor() {
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }

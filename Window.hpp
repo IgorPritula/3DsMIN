@@ -40,12 +40,21 @@ public:
     unsigned int GetHeight() const { return m_Data.Height; }
     std::string GetTitle() const { return m_Data.Title; }
     void SetVSync(bool);
-    bool IsVSync() const;
+    bool IsVSync() const { return m_Data.VSync; };
     GLFWwindow* GetNativeWindow() const { return m_Window; }
     void Shutdown();
     void OnUpdate();
+    bool isKeyPressed(int);
     bool isClose() const;
     void closeWindow();
+    void DisableCursor();
+    void EnableCursor();
+
+    static void WindowSizeCallback(GLFWwindow* window, int width, int height);
+    static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+    static void WindowPosCallback(GLFWwindow* window, int xpos, int ypos);
+    static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void CursorPosCallback(GLFWwindow* window, double xPos, double yPos);
 private:
     GLFWwindow* m_Window;
     

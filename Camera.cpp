@@ -75,10 +75,6 @@ void Camera::OnKeyPressed(KeyPressedEvent& event) {
             case GLFW_KEY_D:
                 m_move.right = true;
                 break;
-            case GLFW_KEY_M:
-                m_Activate = m_Activate ? false : true;
-                m_firstMouse = m_Activate;
-                break;
         }
     }
 }

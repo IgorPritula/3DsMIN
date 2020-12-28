@@ -10,20 +10,24 @@
 #include "Entity/Entity.hpp"
 #include "tests/Test.hpp"
 #include "Framebuffer.h"
+#include "Camera.hpp"
 
 class ImGuiUI {
 public:
-    ImGuiUI(Window* window, Framebuffer*);
+    ImGuiUI(Window* window, Framebuffer*, Camera*);
     void Init();
     void DestroyContext();
     void Begin();
     void End();
     void Render(std::vector<Entity*>& entities, std::vector<Entity *> &lights);
+    void Viewport();
+    static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 private:
 
     Window* m_window;
     Entity* m_selectedEntity;
     Framebuffer* m_Framebuffer;
+    Camera* m_Camera;
 
     // Tests
     std::vector<std::pair<std::string, std::function<test::Test*()>>> m_tests;
