@@ -22,6 +22,7 @@
 #include <glm/glm.hpp>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <sstream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -89,8 +90,10 @@ int main(int argc, char* argv[]) {
     for(int i = 1; i <= 6; i++) {
         for(int j = 1; j <= 6; j++) {
             for(int k = 1; k <= 6; k++) {
-                Entity *ent = new CubeObject;
-                ent->setPosition({(float)k * 5.0 - 17.5, (float)j * 5 - 17.5, (float)i * -5 - 20.0});
+                std::ostringstream label;
+                label << "Cube" << i << j << k;
+                Entity *ent = new CubeObject(label.str());
+                ent->setPosition({(float)k * 2.5 - 8.75, (float)j * 2.5 - 8.75, (float)i * -2.5 - 10.0});
 //                ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
                 entities.push_back(ent);
             }
@@ -106,7 +109,7 @@ int main(int argc, char* argv[]) {
 
     // Lights.
     std::vector<Entity*> lightObjects;
-    glm::vec3 lightPos(-30.0f, 0.0f, -37.5f);
+    glm::vec3 lightPos(-15.0f, 0.0f, -18.75f);
     Entity* lightCube = new CubeObject("White Lamp");
     lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
     lightCube->setPosition(lightPos);
@@ -179,6 +182,7 @@ int main(int argc, char* argv[]) {
         glm::mat4 perspective = camera.GetViewProjectionMatrix();
         lightintShader.setMatrix4fv("perspective", perspective);
         lightintShader.setVec3("lightPos", lightCube->getPosition());
+        lightintShader.setVec4("lightColor", lightCube->getColor());
 
         // Draw objects.
         va.UpdateVerIndBuffer(entities, vb, ib);

@@ -123,20 +123,43 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
 //    ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
     ImGui::Begin("Objects");
     int count = 0;
+    static Entity* c_entity = nullptr;
     for (auto entity : entities) {
         std::ostringstream label;
         label << entity->getName() << "##" << count;
         if (ImGui::Selectable(label.str().c_str(), m_selectedEntity == entity))
             m_selectedEntity = entity;
+
+        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1)) {
+            c_entity = entity;
+            ImGui::OpenPopup("window_context");
+        }
+
+        count++;
+    }
+    static Entity* cl_entity = nullptr;
+    for (auto &light : lights) {
+        std::ostringstream label;
+        label << light->getName() << "##" << count;
+        if (ImGui::Selectable(label.str().c_str(), m_selectedEntity == light))
+            m_selectedEntity = light;
         count++;
     }
 
-    for (auto &light : lights) {
-        auto pos = light->getPosition();
-        if (ImGui::DragFloat3("Position", glm::value_ptr(pos), 0.1f, -50.0f, 50.0f)) {
-            light->setPosition(pos);
+    if(ImGui::BeginPopup("window_context")) {
+        if (ImGui::Selectable("Add")) {
+
         }
+        if (ImGui::Selectable("Delete") && c_entity) {
+            if (m_selectedEntity == c_entity)
+                m_selectedEntity = nullptr;
+            entities.erase(std::remove(entities.begin(), entities.end(), c_entity), entities.end());
+            delete c_entity;
+            c_entity = nullptr;
+        }
+        ImGui::EndPopup();
     }
+
     ImGui::End();
 
     ImGui::Begin("Properties");
