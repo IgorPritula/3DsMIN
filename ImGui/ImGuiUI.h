@@ -8,6 +8,7 @@
 #include <vector>
 #include "Window.hpp"
 #include "Entity/Entity.hpp"
+#include "Entity/EntityManager.h"
 #include "tests/Test.hpp"
 #include "Framebuffer.h"
 #include "Camera.hpp"
@@ -19,7 +20,7 @@ public:
     void DestroyContext();
     void Begin();
     void End();
-    void Render(std::vector<Entity*>& entities, std::vector<Entity *> &lights);
+    void Render(EntityManager&);
     void Viewport();
     static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 private:

@@ -34,10 +34,8 @@
 #include "VertexArray.hpp"
 #include "VertexBufferLayout.hpp"
 #include "Texture.hpp"
-#include "tests/TestTexture.hpp"
 #include "Vertex.h"
-#include "Entity/CubeObject.hpp"
-#include "Entity/PyramidObject.h"
+#include "Entity/EntityManager.h"
 #include "Window.hpp"
 #include "Camera.hpp"
 #include "functions.hpp"
@@ -84,36 +82,26 @@ int main(int argc, char* argv[]) {
     ShaderManager lightSourseShader("res/vertex_color.shader", "res/light_fragment.shader");
     lightSourseShader.use();
     lightSourseShader.setMatrix4fv("transform", glm::mat4(1.0f));
-    
+
+    EntityManager entity_manager;
+
     // Objects.
-    std::vector<Entity*> entities;
     for(int i = 1; i <= 6; i++) {
         for(int j = 1; j <= 6; j++) {
             for(int k = 1; k <= 6; k++) {
                 std::ostringstream label;
                 label << "Cube" << i << j << k;
-                Entity *ent = new CubeObject(label.str());
+                Entity *ent = entity_manager.Create(EntityClass::Cube, label.str());
                 ent->setPosition({(float)k * 2.5 - 8.75, (float)j * 2.5 - 8.75, (float)i * -2.5 - 10.0});
-//                ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
-                entities.push_back(ent);
             }
         }
     }
 
-//    for(int i = 0; i < 20; i++) {
-//        Entity* ent = new PyramidObject;
-//        ent->setPosition({float(rand() % 60 + (-30)), float(rand() % 60 + (-30)), -float(rand() % 60 + 1)});
-//        ent->setRotation(float(rand() % 360), glm::vec3(0.0f, 1.0f, 0.0f));
-//        entities.push_back(ent);
-//    }
-
     // Lights.
-    std::vector<Entity*> lightObjects;
     glm::vec3 lightPos(-15.0f, 0.0f, -18.75f);
-    Entity* lightCube = new CubeObject("White Lamp");
+    Entity* lightCube = entity_manager.Create(EntityClass::Cube, "White Lamp", EntityType::Light);
     lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
     lightCube->setPosition(lightPos);
-    lightObjects.push_back(lightCube);
     
     
     lightintShader.use();
@@ -137,7 +125,7 @@ int main(int argc, char* argv[]) {
     IndexBuffer ib(10000);
     
     // add all objects to vertex and index buffer
-    va.UpdateVerIndBuffer(entities, vb, ib);
+    va.UpdateVerIndBuffer(entity_manager.GetObjects(), vb, ib);
     
     lightintShader.setInt("texture1", 1);
     
@@ -185,14 +173,14 @@ int main(int argc, char* argv[]) {
         lightintShader.setVec4("lightColor", lightCube->getColor());
 
         // Draw objects.
-        va.UpdateVerIndBuffer(entities, vb, ib);
+        va.UpdateVerIndBuffer(entity_manager.GetObjects(), vb, ib);
         Renderer::Draw(va, ib, lightintShader);
 
         // Draw lights.
         lightSourseShader.use();
         lightSourseShader.setMatrix4fv("perspective", perspective);
 
-        va.UpdateVerIndBuffer(lightObjects, vb, ib);
+        va.UpdateVerIndBuffer(entity_manager.GetLights(), vb, ib);
         Renderer::Draw(va, ib, lightSourseShader);
         framebuffer.Unbind();
 
@@ -201,7 +189,7 @@ int main(int argc, char* argv[]) {
         //
         Renderer::Clear();
         imgui.Begin();
-        imgui.Render(entities, lightObjects);
+        imgui.Render(entity_manager);
         imgui.End();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

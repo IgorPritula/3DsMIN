@@ -90,7 +90,7 @@ void ImGuiUI::End() {
     }
 }
 
-void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lights) {
+void ImGuiUI::Render(EntityManager& entity_manager) {
     // Main ImGui window.
     ImGuiID main_ds = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
@@ -124,7 +124,7 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
     ImGui::Begin("Objects");
     int count = 0;
     static Entity* c_entity = nullptr;
-    for (auto entity : entities) {
+    for (auto &entity : entity_manager.GetObjects()) {
         std::ostringstream label;
         label << entity->getName() << "##" << count;
         if (ImGui::Selectable(label.str().c_str(), m_selectedEntity == entity))
@@ -137,8 +137,8 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
 
         count++;
     }
-    static Entity* cl_entity = nullptr;
-    for (auto &light : lights) {
+
+    for (auto &light : entity_manager.GetLights()) {
         std::ostringstream label;
         label << light->getName() << "##" << count;
         if (ImGui::Selectable(label.str().c_str(), m_selectedEntity == light))
@@ -153,8 +153,7 @@ void ImGuiUI::Render(std::vector<Entity *> &entities, std::vector<Entity *> &lig
         if (ImGui::Selectable("Delete") && c_entity) {
             if (m_selectedEntity == c_entity)
                 m_selectedEntity = nullptr;
-            entities.erase(std::remove(entities.begin(), entities.end(), c_entity), entities.end());
-            delete c_entity;
+            entity_manager.Delete(c_entity);
             c_entity = nullptr;
         }
         ImGui::EndPopup();

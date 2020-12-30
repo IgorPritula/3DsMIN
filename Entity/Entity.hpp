@@ -23,13 +23,20 @@
 #include "Vertex.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+enum class EntityType {
+    Object,
+    Light,
+    Static
+};
+
 class Entity {
 public:
 
-    Entity(std::string name) : m_Position(0.0f), m_Rotation({0, {1.0f, 0.0f, 0.0f}}), m_color({RGB(145), RGB(145), RGB(145), 1.0f}), m_Name(std::move(name)) {}
+    Entity(std::string name) : m_Name(std::move(name)), m_type(EntityType::Object), m_Position(0.0f),
+    m_Rotation({0, {1.0f, 0.0f, 0.0f}}), m_color({RGB(145), RGB(145), RGB(145), 1.0f}){}
+
     virtual std::vector<Vertex> getVertices() const { return m_Vertices; };
     virtual std::vector<unsigned int> getIndeces() const { return m_indices; };
-//    virtual void moveEnity(glm::vec3) = 0;
 
     virtual std::string getName() const { return m_Name; };
     virtual void setName(std::string name) { m_Name = std::move(name); };
@@ -39,7 +46,9 @@ public:
 
     virtual void setPosition(glm::vec3 pos) { m_Position = pos; updateVertices(); };
     virtual glm::vec3 getPosition() const { return m_Position; };
-    
+
+    virtual EntityType GetType() const { return m_type; };
+
     virtual void setRotation(int angle, glm::vec3 vec) {
         m_Rotation.angle = angle;
         m_Rotation.vec = vec;
@@ -65,6 +74,10 @@ protected:
             vertex.Normal = normalTrans * vertex.Normal;
         }
     }
+
+private:
+    void SetType(EntityType type) { m_type = type; };
+
 protected:
     std::vector<Vertex> m_OriginVertices;
     std::vector<Vertex> m_Vertices;
@@ -74,5 +87,9 @@ protected:
     Rotate m_Rotation;
     glm::mat4 m_Transform;
     glm::vec4 m_color;
+
+private:
+    EntityType m_type;
+    friend class EntityManager;
 };
 #endif /* Entity_hpp */
