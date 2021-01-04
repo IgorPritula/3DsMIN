@@ -86,20 +86,23 @@ int main(int argc, char* argv[]) {
     EntityManager entity_manager;
 
     // Objects.
-    for(int i = 1; i <= 6; i++) {
-        for(int j = 1; j <= 6; j++) {
-            for(int k = 1; k <= 6; k++) {
-                std::ostringstream label;
-                label << "Cube" << i << j << k;
-                Entity *ent = entity_manager.Create(EntityClass::Cube, label.str());
-                ent->setPosition({(float)k * 2.5 - 8.75, (float)j * 2.5 - 8.75, (float)i * -2.5 - 10.0});
-            }
-        }
-    }
+    entity_manager.Create(ObjectType::Cube);
+
+    // Demo.
+//    for(int i = 1; i <= 6; i++) {
+//        for(int j = 1; j <= 6; j++) {
+//            for(int k = 1; k <= 6; k++) {
+//                std::ostringstream label;
+//                label << "Cube" << i << j << k;
+//                Entity *ent = entity_manager.Create(ObjectType::Cube, label.str());
+//                ent->setPosition({(float)k * 2.5 - 8.75, (float)j * 2.5 - 8.75, (float)i * -2.5 - 10.0});
+//            }
+//        }
+//    }
 
     // Lights.
-    glm::vec3 lightPos(-15.0f, 0.0f, -18.75f);
-    Entity* lightCube = entity_manager.Create(EntityClass::Cube, "White Lamp", EntityType::Light);
+    glm::vec3 lightPos(0.0f, 10.0f, 5.0f);
+    Entity* lightCube = entity_manager.Create(ObjectType::Cube, "White Lamp", EntityType::Light);
     lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
     lightCube->setPosition(lightPos);
     
@@ -134,6 +137,7 @@ int main(int argc, char* argv[]) {
     texture.Bind(1);
 
     Camera camera(45.0f, (float)DEF_VIEWPORT_W/(float)DEF_VIEWPORT_W, 0.1f, 120.0f);
+    camera.SetPosition({0.0, 2.0, 10.0});
 
     // Framebuffer
     Framebuffer framebuffer(DEF_VIEWPORT_W, DEF_VIEWPORT_W);

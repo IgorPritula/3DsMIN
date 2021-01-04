@@ -56,7 +56,7 @@ public:
             m_Vertices[i].Color = getColor();
             m_Vertices[i].TexCoord = {cube_vertices[3 + vertex], cube_vertices[4 + vertex]};
             m_Vertices[i].Normal = {cube_vertices[5 + vertex], cube_vertices[6 + vertex], cube_vertices[7 + vertex]};
-            m_Vertices[i].TexID = 1.0f;
+            m_Vertices[i].TexID = -1.0f;
         }
         
         m_indices = {

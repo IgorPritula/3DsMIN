@@ -103,6 +103,9 @@ void ImGuiUI::Render(EntityManager& entity_manager) {
     }
     ImGui::EndMainMenuBar();
 
+    Entities(entity_manager);
+    Properties();
+    Viewport();
 
     // Tests. @todo split into separate class.
 //    ImGui::Text("Available tests:");
@@ -121,17 +124,30 @@ void ImGuiUI::Render(EntityManager& entity_manager) {
 //    ImGui::SetNextWindowPos(ImVec2(0.1, 0.1), ImGuiCond_Always);
 //    ImGui::SetNextWindowSize( ImVec2( (float) vWindowSize.x, (float) vWindowSize.y ), ImGuiSetCond_Always );
 //    ImGui::SetNextWindowViewport(ImGui::GetMainViewport()->ID);
+//    if (m_current_test != nullptr)
+//        m_current_test->OnImGuiRender();
+}
+
+void ImGuiUI::Entities(EntityManager& entity_manager) {
     ImGui::Begin("Objects");
-    int count = 0;
     static Entity* c_entity = nullptr;
+
+    // Right-click on blank space
+    if (ImGui::IsWindowHovered(1) && ImGui::IsMouseReleased(1))
+    {
+        ImGui::OpenPopup("window_context");
+        c_entity = nullptr;
+    }
+
+    int count = 0;
     for (auto &entity : entity_manager.GetObjects()) {
         std::ostringstream label;
         label << entity->getName() << "##" << count;
         if (ImGui::Selectable(label.str().c_str(), m_selectedEntity == entity))
             m_selectedEntity = entity;
 
-        if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(1)) {
-            c_entity = entity;
+        if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(1)) {
+            m_selectedEntity = c_entity = entity;
             ImGui::OpenPopup("window_context");
         }
 
@@ -140,17 +156,23 @@ void ImGuiUI::Render(EntityManager& entity_manager) {
 
     for (auto &light : entity_manager.GetLights()) {
         std::ostringstream label;
-        label << light->getName() << "##" << count;
+        label << light->getName() << " (L)##" << count;
         if (ImGui::Selectable(label.str().c_str(), m_selectedEntity == light))
             m_selectedEntity = light;
         count++;
     }
 
     if(ImGui::BeginPopup("window_context")) {
-        if (ImGui::Selectable("Add")) {
-
+        if (ImGui::BeginMenu("New"))
+        {
+            auto o_types = entity_manager.GetObjectTypes();
+            for(ObjectType type : o_types ) {
+                if(ImGui::MenuItem(entity_manager.GetObjectTypeName(type)))
+                    entity_manager.Create(type);
+            }
+            ImGui::EndMenu();
         }
-        if (ImGui::Selectable("Delete") && c_entity) {
+        if (c_entity && ImGui::MenuItem("Delete")) {
             if (m_selectedEntity == c_entity)
                 m_selectedEntity = nullptr;
             entity_manager.Delete(c_entity);
@@ -160,32 +182,38 @@ void ImGuiUI::Render(EntityManager& entity_manager) {
     }
 
     ImGui::End();
+}
 
+void ImGuiUI::Properties() {
     ImGui::Begin("Properties");
-        if(m_selectedEntity != nullptr){
-            auto pos = m_selectedEntity->getPosition();
-            if (ImGui::DragFloat3("Position", glm::value_ptr(pos), 0.1f, -50.0f, 50.0f)) {
-                m_selectedEntity->setPosition(pos);
-            }
-            auto color = m_selectedEntity->getColor();
-            if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
-                m_selectedEntity->setColor(color);
-            }
+    if(m_selectedEntity != nullptr){
+        auto pos = m_selectedEntity->getPosition();
+        if (DrawVec3Control("Position", pos)) {
+            m_selectedEntity->setPosition(pos);
         }
+        auto ros = m_selectedEntity->getRotation();
+        if (DrawVec3Control("Rotation", ros, 0.5f, -360.0f, 360.0f)) {
+            m_selectedEntity->setRotation(ros);
+        }
+        auto scale = m_selectedEntity->getScale();
+        if (DrawVec3Control("Scale", scale, 0.1f, 0.01f, 500.0f)) {
+            m_selectedEntity->setScale(scale);
+        }
+        auto color = m_selectedEntity->getColor();
+        if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
+            m_selectedEntity->setColor(color);
+        }
+    }
     ImGui::End();
 
     ImGui::Begin("System Info");
+    ImGui::Text("Press 'M' on Viewport window to enable camera.");
     ImGui::Text("CURRENT_WIDTH = %d", m_window->GetWidth());
     ImGui::Text("CURRENT_HEIGHT = %d", m_window->GetHeight());
 
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
                 ImGui::GetIO().Framerate);
     ImGui::End();
-
-    if (m_current_test != nullptr)
-        m_current_test->OnImGuiRender();
-
-    Viewport();
 }
 
 void ImGuiUI::Viewport() {
@@ -246,4 +274,37 @@ void ImGuiUI::KeyCallback(GLFWwindow *window, int key, int scancode, int action,
     Window::KeyCallback(window, key, scancode, action, mods);
 }
 
+bool ImGuiUI::DrawVec3Control(const std::string& label, glm::vec3& values, float speed, float min, float max) {
+    bool drag = false;
+    ImGui::PushID(label.c_str());
 
+    ImGui::Columns(2);
+    ImGui::SetColumnWidth(0, 100.0f);
+    ImGui::Text("%s", label.c_str());
+    ImGui::NextColumn();
+
+    ImGui::PushItemWidth(50.0f);
+    if(ImGui::DragFloat(":X##x", &values.x, speed, min, max, "%.2f")) {
+        drag = true;
+    }
+    ImGui::PopItemWidth();
+
+    ImGui::SameLine();
+    ImGui::PushItemWidth(50.0f);
+    if(ImGui::DragFloat(":Y##y", &values.y, speed, min, max, "%.2f")) {
+        drag = true;
+    }
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
+
+    ImGui::PushItemWidth(50.0f);
+    if(ImGui::DragFloat(":Z##z", &values.z, speed, min, max, "%.2f")){
+        drag = true;
+    }
+    ImGui::PopItemWidth();
+
+    ImGui::Columns(1);
+
+    ImGui::PopID();
+    return drag;
+}

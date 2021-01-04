@@ -6,13 +6,13 @@
 
 #define DELETE_ENTITY(v,e) v.erase(std::remove(v.begin(), v.end(), e), v.end());
 
-Entity* EntityManager::Create(EntityClass cl, const std::string& name, EntityType type) {
+Entity* EntityManager::Create(ObjectType cl, const std::string& name, EntityType type) {
     Entity* entity = nullptr;
     switch (cl) {
-        case EntityClass::Pyramid:
+        case ObjectType::Pyramid:
             entity = new PyramidObject;
             break;
-        case EntityClass::Cube:
+        case ObjectType::Cube:
             entity = new CubeObject;
             break;
         default:
@@ -63,4 +63,19 @@ std::vector<Entity*>& EntityManager::GetLights() {
 }
 std::vector<Entity*>& EntityManager::GetStatic() {
     return m_Static;
+}
+
+const char* EntityManager::GetObjectTypeName(ObjectType cl) {
+    switch (cl) {
+        case ObjectType::Pyramid:
+            return "Pyramid";
+        case ObjectType::Cube:
+            return "Cube";
+        default:
+            return "None";
+    }
+}
+
+std::array<ObjectType,2> EntityManager::GetObjectTypes() const {
+    return m_ObjectTypes;
 }

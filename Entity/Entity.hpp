@@ -33,7 +33,7 @@ class Entity {
 public:
 
     Entity(std::string name) : m_Name(std::move(name)), m_type(EntityType::Object), m_Position(0.0f),
-    m_Rotation({0, {1.0f, 0.0f, 0.0f}}), m_color({RGB(145), RGB(145), RGB(145), 1.0f}){}
+    m_Rotation(0.0f), m_Scale(1.0f), m_color({RGB(145), RGB(145), RGB(145), 1.0f}){}
 
     virtual std::vector<Vertex> getVertices() const { return m_Vertices; };
     virtual std::vector<unsigned int> getIndeces() const { return m_indices; };
@@ -47,19 +47,20 @@ public:
     virtual void setPosition(glm::vec3 pos) { m_Position = pos; updateVertices(); };
     virtual glm::vec3 getPosition() const { return m_Position; };
 
-    virtual EntityType GetType() const { return m_type; };
+    virtual void setRotation(glm::vec3 vec) { m_Rotation = vec; updateVertices();};
+    virtual glm::vec3 getRotation() const { return m_Rotation; };
 
-    virtual void setRotation(int angle, glm::vec3 vec) {
-        m_Rotation.angle = angle;
-        m_Rotation.vec = vec;
-        updateVertices();
-    };
-    virtual Rotate getRotation() const { return m_Rotation; };
-    
+    virtual void setScale(glm::vec3 vec) { m_Scale = vec; updateVertices();};
+    virtual glm::vec3 getScale() const { return m_Scale; };
+
+    virtual EntityType GetType() const { return m_type; };
 //    virtual void setTransform(glm::mat4 trans) { m_Transform = trans; updateVertices(); };
     virtual glm::mat4 getTransform() const {
         glm::mat4 trans = glm::translate(glm::mat4(1.0f), m_Position);
-        trans = glm::rotate(trans, glm::radians((float)m_Rotation.angle), m_Rotation.vec);
+        trans = glm::rotate(trans, glm::radians(m_Rotation.x), {1.0f, 0.0f, 0.0f});
+        trans = glm::rotate(trans, glm::radians(m_Rotation.y), {0.0f, 1.0f, 0.0f});
+        trans = glm::rotate(trans, glm::radians(m_Rotation.z), {0.0f, 0.0f, 1.0f});
+        trans = glm::scale(trans, m_Scale);
         return trans;
     };
     
@@ -84,7 +85,8 @@ protected:
     std::vector<unsigned int> m_indices;
     std::string m_Name;
     glm::vec3 m_Position;
-    Rotate m_Rotation;
+    glm::vec3 m_Rotation;
+    glm::vec3 m_Scale;
     glm::mat4 m_Transform;
     glm::vec4 m_color;
 

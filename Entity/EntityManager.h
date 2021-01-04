@@ -9,15 +9,17 @@
 #include "CubeObject.hpp"
 #include "PyramidObject.h"
 
-enum class EntityClass {
+enum class ObjectType {
     Cube,
     Pyramid
 };
 
 class EntityManager {
 public:
-    Entity* Create(EntityClass, const std::string& name = "", EntityType type = EntityType::Object);
+    Entity* Create(ObjectType, const std::string& name = "", EntityType type = EntityType::Object);
     void Delete(Entity*);
+    const char* GetObjectTypeName(ObjectType);
+    std::array<ObjectType,2> GetObjectTypes() const;
     std::vector<Entity*>& GetObjects();
     std::vector<Entity*>& GetLights();
     std::vector<Entity*>& GetStatic();
@@ -25,6 +27,7 @@ public:
 private:
     void addEntity(Entity*, EntityType);
 private:
+    const std::array<ObjectType,2> m_ObjectTypes = {ObjectType::Cube, ObjectType::Pyramid};
     std::vector<Entity*> m_Objects;
     std::vector<Entity*> m_Lights;
     std::vector<Entity*> m_Static;

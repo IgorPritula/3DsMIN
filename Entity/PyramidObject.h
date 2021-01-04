@@ -43,7 +43,7 @@ public:
             m_Vertices[i].Color = getColor();
             m_Vertices[i].TexCoord = {pyramid_vertices[3 + vertex], pyramid_vertices[4 + vertex]};
             m_Vertices[i].Normal = {pyramid_vertices[5 + vertex], pyramid_vertices[6 + vertex], pyramid_vertices[7 + vertex]};
-            m_Vertices[i].TexID = 1.0f;
+            m_Vertices[i].TexID = -1.0f;
         }
 
         m_indices = {

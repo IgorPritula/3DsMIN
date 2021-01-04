@@ -21,8 +21,11 @@ public:
     void Begin();
     void End();
     void Render(EntityManager&);
+    void Entities(EntityManager&);
+    void Properties();
     void Viewport();
     static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static bool DrawVec3Control(const std::string& label, glm::vec3& values, float speed = 0.1f, float min = 0.0f, float max = 0.0f);
 private:
 
     Window* m_window;
