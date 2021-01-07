@@ -18,12 +18,16 @@ class EntityManager {
 public:
     Entity* Create(ObjectType, const std::string& name = "", EntityType type = EntityType::Object);
     void Delete(Entity*);
+    void Save(Entity*);
     const char* GetObjectTypeName(ObjectType);
     std::array<ObjectType,2> GetObjectTypes() const;
     std::vector<Entity*>& GetObjects();
     std::vector<Entity*>& GetLights();
     std::vector<Entity*>& GetStatic();
 
+    void SetUpdateFlag(EntityType type);
+    bool GetUpdateFlag(EntityType type);
+    void RemoveUpdateFlag(EntityType type);
 private:
     void addEntity(Entity*, EntityType);
 private:
@@ -31,6 +35,7 @@ private:
     std::vector<Entity*> m_Objects;
     std::vector<Entity*> m_Lights;
     std::vector<Entity*> m_Static;
+    unsigned int m_UpdateFlag = 0;
 };
 
 

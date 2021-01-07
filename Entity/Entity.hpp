@@ -24,9 +24,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 enum class EntityType {
-    Object,
-    Light,
-    Static
+    Object = 1 << 0,
+    Light = 1 << 1,
+    Static = 1 << 2
 };
 
 class Entity {
@@ -41,16 +41,16 @@ public:
     virtual std::string getName() const { return m_Name; };
     virtual void setName(std::string name) { m_Name = std::move(name); };
     
-    virtual void setColor(glm::vec4 color) { m_color = color; updateVertices(); };
+    virtual void setColor(glm::vec4 color) { m_color = color; };
     virtual glm::vec4 getColor() const { return m_color; };
 
-    virtual void setPosition(glm::vec3 pos) { m_Position = pos; updateVertices(); };
+    virtual void setPosition(glm::vec3 pos) { m_Position = pos;};
     virtual glm::vec3 getPosition() const { return m_Position; };
 
-    virtual void setRotation(glm::vec3 vec) { m_Rotation = vec; updateVertices();};
+    virtual void setRotation(glm::vec3 vec) { m_Rotation = vec;};
     virtual glm::vec3 getRotation() const { return m_Rotation; };
 
-    virtual void setScale(glm::vec3 vec) { m_Scale = vec; updateVertices();};
+    virtual void setScale(glm::vec3 vec) { m_Scale = vec; };
     virtual glm::vec3 getScale() const { return m_Scale; };
 
     virtual EntityType GetType() const { return m_type; };
@@ -65,7 +65,7 @@ public:
     };
     
 protected:
-    void updateVertices() {
+    void UpdateEntity() {
         m_Vertices = m_OriginVertices;
         glm::mat4 trans = getTransform();
         glm::mat3 normalTrans = glm::mat3(glm::transpose(glm::inverse(trans)));

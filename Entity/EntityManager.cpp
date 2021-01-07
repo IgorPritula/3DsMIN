@@ -23,11 +23,13 @@ Entity* EntityManager::Create(ObjectType cl, const std::string& name, EntityType
     }
     entity->SetType(type);
     addEntity(entity, type);
+    SetUpdateFlag(type);
     return entity;
 }
 
 void EntityManager::Delete(Entity* entity) {
-    switch (entity->GetType()) {
+    EntityType type = entity->GetType();
+    switch (type) {
         case EntityType::Object:
             DELETE_ENTITY(m_Objects, entity)
             break;
@@ -39,6 +41,12 @@ void EntityManager::Delete(Entity* entity) {
             break;
     }
     delete entity;
+    SetUpdateFlag(type);
+}
+
+void EntityManager::Save(Entity *ent) {
+    ent->UpdateEntity();
+    SetUpdateFlag(ent->GetType());
 }
 
 void EntityManager::addEntity(Entity* entity, EntityType type) {
@@ -78,4 +86,16 @@ const char* EntityManager::GetObjectTypeName(ObjectType cl) {
 
 std::array<ObjectType,2> EntityManager::GetObjectTypes() const {
     return m_ObjectTypes;
+}
+
+void EntityManager::SetUpdateFlag(EntityType type) {
+    m_UpdateFlag |= (int)type;
+}
+
+bool EntityManager::GetUpdateFlag(EntityType type) {
+    bool res = m_UpdateFlag & (int)type;
+    return res;
+}
+void EntityManager::RemoveUpdateFlag(EntityType type) {
+    m_UpdateFlag &= ~(int)type;
 }

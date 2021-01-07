@@ -96,24 +96,14 @@ int main(int argc, char* argv[]) {
 //                label << "Cube" << i << j << k;
 //                Entity *ent = entity_manager.Create(ObjectType::Cube, label.str());
 //                ent->setPosition({(float)k * 2.5 - 8.75, (float)j * 2.5 - 8.75, (float)i * -2.5 - 10.0});
+//                entity_manager.Save(ent);
 //            }
 //        }
 //    }
 
-    // Lights.
-    glm::vec3 lightPos(0.0f, 10.0f, 5.0f);
-    Entity* lightCube = entity_manager.Create(ObjectType::Cube, "White Lamp", EntityType::Light);
-    lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
-    lightCube->setPosition(lightPos);
-    
-    
-    lightintShader.use();
-    lightintShader.setVec3("lightPos", lightPos);
-    lightintShader.setVec4("lightColor", lightCube->getColor());
-    
+    // Object Vertex Array.
     VertexArray va;
     va.Bind();
-    
     // Vertex buffer.
     VertexBuffer vb(10000);
     VertexBufferLayout layout(sizeof(Vertex));
@@ -123,16 +113,33 @@ int main(int argc, char* argv[]) {
     layout.Push<float>(V_COUNT(Vertex::Normal));
     layout.Push<float>(V_COUNT(Vertex::TexID));
     va.AddBuffer(vb, layout);
-    
     // bind the Element Array Buffer
     IndexBuffer ib(10000);
-    
     // add all objects to vertex and index buffer
     va.UpdateVerIndBuffer(entity_manager.GetObjects(), vb, ib);
-    
-    lightintShader.setInt("texture1", 1);
-    
+
+
+    // Lights.
+    glm::vec3 lightPos(0.0f, 10.0f, 5.0f);
+    Entity* lightCube = entity_manager.Create(ObjectType::Cube, "White Lamp", EntityType::Light);
+    lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
+    lightCube->setPosition(lightPos);
+    entity_manager.Save(lightCube);
+
+    lightintShader.use();
+    lightintShader.setVec3("lightPos", lightPos);
+    lightintShader.setVec4("lightColor", lightCube->getColor());
+
+    // Lights vertex array
+    VertexArray light_va;
+    light_va.Bind();
+    VertexBuffer light_vb(10000);
+    light_va.AddBuffer(light_vb, layout);
+    IndexBuffer light_ib(10000);
+    light_va.UpdateVerIndBuffer(entity_manager.GetLights(), light_vb, light_ib);
+
     // load and create a texture
+    lightintShader.setInt("texture1", 1);
     Texture texture("res/tnt.png", GL_RGBA);
     texture.Bind(1);
 
@@ -176,16 +183,23 @@ int main(int argc, char* argv[]) {
         lightintShader.setVec3("lightPos", lightCube->getPosition());
         lightintShader.setVec4("lightColor", lightCube->getColor());
 
+        // Update objects vertex buffer if entities was updated.
+        if(entity_manager.GetUpdateFlag(EntityType::Object)) {
+            va.UpdateVerIndBuffer(entity_manager.GetObjects(), vb, ib);
+            entity_manager.RemoveUpdateFlag(EntityType::Object);
+        }
         // Draw objects.
-        va.UpdateVerIndBuffer(entity_manager.GetObjects(), vb, ib);
         Renderer::Draw(va, ib, lightintShader);
 
-        // Draw lights.
         lightSourseShader.use();
         lightSourseShader.setMatrix4fv("perspective", perspective);
-
-        va.UpdateVerIndBuffer(entity_manager.GetLights(), vb, ib);
-        Renderer::Draw(va, ib, lightSourseShader);
+        // Update lights vertex buffer if entities was updated.
+        if(entity_manager.GetUpdateFlag(EntityType::Light)) {
+            light_va.UpdateVerIndBuffer(entity_manager.GetLights(), light_vb, light_ib);
+            entity_manager.RemoveUpdateFlag(EntityType::Light);
+        }
+        // Draw lights.
+        Renderer::Draw(light_va, light_ib, lightSourseShader);
         framebuffer.Unbind();
 
         //

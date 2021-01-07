@@ -7,6 +7,8 @@
 //
 #include "functions.hpp"
 
+//#include <unistd.h>
+//#include <mach-o/dyld.h>
 #include <ctime>
 #include <iostream>
 
@@ -40,3 +42,15 @@ void showFps() {
         count = 0;
     }
 }
+
+//void DEBUG_run_as_macos_app() {
+//    uint32_t i = 1024;
+//    char* s; s = new char[i];
+//    _NSGetExecutablePath(s, &i);
+//    std::string str = std::string(s);
+//    str = str.substr(0, str.find_last_of("/"));
+//    std::cout << str << std::endl;
+//    if(!chdir(str.c_str()))
+//        std::cout << std::string("Failed to change working directory to executable path: ") + strerror(errno) << std::endl;
+//    delete[] s;
+//}

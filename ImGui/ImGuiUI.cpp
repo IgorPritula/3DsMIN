@@ -104,7 +104,7 @@ void ImGuiUI::Render(EntityManager& entity_manager) {
     ImGui::EndMainMenuBar();
 
     Entities(entity_manager);
-    Properties();
+    Properties(entity_manager);
     Viewport();
 
     // Tests. @todo split into separate class.
@@ -184,24 +184,28 @@ void ImGuiUI::Entities(EntityManager& entity_manager) {
     ImGui::End();
 }
 
-void ImGuiUI::Properties() {
+void ImGuiUI::Properties(EntityManager& entity_manager) {
     ImGui::Begin("Properties");
     if(m_selectedEntity != nullptr){
         auto pos = m_selectedEntity->getPosition();
         if (DrawVec3Control("Position", pos)) {
             m_selectedEntity->setPosition(pos);
+            entity_manager.Save(m_selectedEntity);
         }
         auto ros = m_selectedEntity->getRotation();
         if (DrawVec3Control("Rotation", ros, 0.5f, -360.0f, 360.0f)) {
             m_selectedEntity->setRotation(ros);
+            entity_manager.Save(m_selectedEntity);
         }
         auto scale = m_selectedEntity->getScale();
         if (DrawVec3Control("Scale", scale, 0.1f, 0.01f, 500.0f)) {
             m_selectedEntity->setScale(scale);
+            entity_manager.Save(m_selectedEntity);
         }
         auto color = m_selectedEntity->getColor();
         if (ImGui::ColorEdit3("Color", glm::value_ptr(color))) {
             m_selectedEntity->setColor(color);
+            entity_manager.Save(m_selectedEntity);
         }
     }
     ImGui::End();
