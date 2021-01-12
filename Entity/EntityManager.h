@@ -8,10 +8,14 @@
 #include "Entity.hpp"
 #include "CubeObject.hpp"
 #include "PyramidObject.h"
+#include "Axises.h"
+#include "Grid.h"
 
 enum class ObjectType {
     Cube,
-    Pyramid
+    Pyramid,
+    Axises,
+    Grid
 };
 
 class EntityManager {

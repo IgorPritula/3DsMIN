@@ -17,6 +17,13 @@ void Renderer::Draw(const VertexArray &va, const IndexBuffer &ib, ShaderManager 
     GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, 0));
 }
 
+void Renderer::DrawLines(const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader) {
+    shader.use();
+    va.Bind();
+    ib.Bind();
+    GLCall(glDrawElements(GL_LINES, ib.GetCount(), GL_UNSIGNED_INT, 0));
+}
+
 void Renderer::DrawEntities(std::vector<Entity*> &entities, const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader) {
     shader.use();
     va.Bind();

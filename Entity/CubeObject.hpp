@@ -49,7 +49,7 @@ static const float cube_vertices[] = {
 class CubeObject : public Entity {
 public:
     CubeObject(std::string name = "Cube") : Entity(std::move(name)) {
-        m_Vertices.resize(sizeof(cube_vertices)/(sizeof(float) * 5));
+        m_Vertices.resize(sizeof(cube_vertices)/(sizeof(float) * 8));
         for (int i = 0; i < m_Vertices.size(); i++) {
             int vertex = 8 * i;
             m_Vertices[i].Position = {cube_vertices[0 + vertex], cube_vertices[1 + vertex], cube_vertices[2 + vertex]};

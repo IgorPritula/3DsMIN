@@ -15,6 +15,12 @@ Entity* EntityManager::Create(ObjectType cl, const std::string& name, EntityType
         case ObjectType::Cube:
             entity = new CubeObject;
             break;
+        case ObjectType::Axises:
+            entity = new Axises;
+            break;
+        case ObjectType::Grid:
+            entity = new Grid;
+            break;
         default:
             entity = new CubeObject;
     }

@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
     VertexArray va;
     va.Bind();
     // Vertex buffer.
-    VertexBuffer vb(10000);
+    VertexBuffer vb(MAX_VERTEX_NUM);
     VertexBufferLayout layout(sizeof(Vertex));
     layout.Push<float>(V_COUNT(Vertex::Position));
     layout.Push<float>(V_COUNT(Vertex::Color));
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
     layout.Push<float>(V_COUNT(Vertex::TexID));
     va.AddBuffer(vb, layout);
     // bind the Element Array Buffer
-    IndexBuffer ib(10000);
+    IndexBuffer ib(MAX_VERTEX_NUM);
     // add all objects to vertex and index buffer
     va.UpdateVerIndBuffer(entity_manager.GetObjects(), vb, ib);
 
@@ -133,10 +133,21 @@ int main(int argc, char* argv[]) {
     // Lights vertex array
     VertexArray light_va;
     light_va.Bind();
-    VertexBuffer light_vb(10000);
+    VertexBuffer light_vb(MAX_VERTEX_NUM);
     light_va.AddBuffer(light_vb, layout);
-    IndexBuffer light_ib(10000);
+    IndexBuffer light_ib(MAX_VERTEX_NUM);
     light_va.UpdateVerIndBuffer(entity_manager.GetLights(), light_vb, light_ib);
+
+    // Static vertex array
+    entity_manager.Create(ObjectType::Axises, "Axises", EntityType::Static);
+    entity_manager.Create(ObjectType::Grid, "Grid", EntityType::Static);
+
+    VertexArray static_va;
+    static_va.Bind();
+    VertexBuffer static_vb(MAX_VERTEX_NUM);
+    light_va.AddBuffer(static_vb, layout);
+    IndexBuffer static_ib(MAX_VERTEX_NUM);
+    static_va.UpdateVerIndBuffer(entity_manager.GetStatic(), static_vb, static_ib);
 
     // load and create a texture
     lightintShader.setInt("texture1", 1);
@@ -200,6 +211,9 @@ int main(int argc, char* argv[]) {
         }
         // Draw lights.
         Renderer::Draw(light_va, light_ib, lightSourseShader);
+
+        // Draw static.
+        Renderer::DrawLines(static_va, static_ib, lightSourseShader);
         framebuffer.Unbind();
 
         //

@@ -65,7 +65,7 @@ public:
     };
     
 protected:
-    void UpdateEntity() {
+    virtual void UpdateEntity() {
         m_Vertices = m_OriginVertices;
         glm::mat4 trans = getTransform();
         glm::mat3 normalTrans = glm::mat3(glm::transpose(glm::inverse(trans)));

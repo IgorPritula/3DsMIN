@@ -45,7 +45,9 @@ add_executable(3DsMIN
         Window.cpp
         ImGui/ImGuiUI.cpp
         Framebuffer.cpp
-        Entity/EntityManager.cpp)
+        Entity/EntityManager.cpp
+        Entity/Axises.cpp
+        Entity/Grid.cpp)
 
 target_link_libraries(3DsMIN glfw)
 target_link_libraries(3DsMIN ${OPENGL_LIBRARY})
