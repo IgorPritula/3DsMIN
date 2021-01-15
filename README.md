@@ -1,5 +1,9 @@
 # 3DsMIN
 
+3DsMIN is simple 3D modeling software.
+
+![alt text](https://raw.githubusercontent.com/IgorPritula/3DsMIN/master/Screenshot.png)
+
 ### Build steps
 
 Clone repo with dependecies:
