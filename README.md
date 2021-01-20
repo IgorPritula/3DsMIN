@@ -1,8 +1,23 @@
 # 3DsMIN
 
-3DsMIN is simple 3D modeling software.
-
+3DsMIN is simple 3D modeling software.  
+Features:
+* Create objects (cube, pyramid).
+* Change object positions, rotation, scale and color.
+* Dymanic light.
+* Add texture to object (not with UI yet).
+* Change and drag application's sub windows.
+* Free camera (press 'M' button and use WASD to manipulate)
 ![alt text](https://raw.githubusercontent.com/IgorPritula/3DsMIN/master/Screenshot.png)
+
+Future features:
+* Mesh loader (stl ascii and binary)
+* Multiple lights calculation.
+* Create lights objects with gui.
+* Export/import scene in lua or yaml.
+* Fixed camera, switching between cameras.
+
+
 
 ### Build steps
 
