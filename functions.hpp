@@ -14,7 +14,7 @@
 #define DEF_VIEWPORT_W 600
 #define DEF_VIEWPORT_H 600
 
-#define MAX_VERTEX_NUM 100000
+#define MAX_VERTEX_NUM 1000000
 
 // @todo wrap each opengl function in GLCall
 #ifdef __APPLE__

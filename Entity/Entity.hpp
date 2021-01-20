@@ -13,7 +13,9 @@
 #define degToRad(x) x*(3.141592f/180.0f)
 #endif
 
+#ifndef RGB
 #define RGB(x) float(x)/(255.0f)
+#endif
 
 #include <stdio.h>
 #include <utility>

@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
     lightSourseShader.setMatrix4fv("transform", glm::mat4(1.0f));
 
     EntityManager entity_manager;
-
+//    entity_manager.CreateMesh("filepath/mesh.stl");
     // Objects.
     entity_manager.Create(ObjectType::Cube);
 

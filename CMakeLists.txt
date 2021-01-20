@@ -13,6 +13,7 @@ include_directories(vendor/glew/include)
 include_directories(vendor/imgui)
 include_directories(vendor/imgui/backends)
 include_directories(vendor/stb_image)
+include_directories(vendor/stl_reader)
 
 add_subdirectory(vendor/GLFW)
 add_subdirectory(vendor/glm)
@@ -47,7 +48,9 @@ add_executable(3DsMIN
         Framebuffer.cpp
         Entity/EntityManager.cpp
         Entity/Axises.cpp
-        Entity/Grid.cpp)
+        Entity/Grid.cpp
+        Helper/MeshLoader.cpp
+        Entity/Mesh.cpp)
 
 target_link_libraries(3DsMIN glfw)
 target_link_libraries(3DsMIN ${OPENGL_LIBRARY})

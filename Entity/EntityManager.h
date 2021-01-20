@@ -6,10 +6,6 @@
 #define INC_3DSMIN_ENTITYMANAGER_H
 
 #include "Entity.hpp"
-#include "CubeObject.hpp"
-#include "PyramidObject.h"
-#include "Axises.h"
-#include "Grid.h"
 
 enum class ObjectType {
     Cube,
@@ -21,6 +17,7 @@ enum class ObjectType {
 class EntityManager {
 public:
     Entity* Create(ObjectType, const std::string& name = "", EntityType type = EntityType::Object);
+    Entity* CreateMesh(const char* filename, const std::string& name = "", EntityType type = EntityType::Object);
     void Delete(Entity*);
     void Save(Entity*);
     const char* GetObjectTypeName(ObjectType);

@@ -4,6 +4,12 @@
 
 #include "EntityManager.h"
 
+#include "CubeObject.hpp"
+#include "PyramidObject.h"
+#include "Axises.h"
+#include "Grid.h"
+#include "Mesh.h"
+
 #define DELETE_ENTITY(v,e) v.erase(std::remove(v.begin(), v.end(), e), v.end());
 
 Entity* EntityManager::Create(ObjectType cl, const std::string& name, EntityType type) {
@@ -23,6 +29,20 @@ Entity* EntityManager::Create(ObjectType cl, const std::string& name, EntityType
             break;
         default:
             entity = new CubeObject;
+    }
+    if(!name.empty()) {
+        entity->setName(name);
+    }
+    entity->SetType(type);
+    addEntity(entity, type);
+    SetUpdateFlag(type);
+    return entity;
+}
+
+Entity* EntityManager::CreateMesh(const char* filename, const std::string& name, EntityType type) {
+    Mesh* entity = new Mesh(filename);
+    if(!entity->GetLoadStatus()) {
+        return nullptr;
     }
     if(!name.empty()) {
         entity->setName(name);
