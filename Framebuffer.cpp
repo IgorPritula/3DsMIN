@@ -1,5 +1,5 @@
 //
-// Created by Ihor Prytula on 12.12.2020.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #include "Framebuffer.h"

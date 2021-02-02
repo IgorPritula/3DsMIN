@@ -1,10 +1,7 @@
 //
-//  Window.cpp
-//  OpenGl
+//  Copyright © 2021 Ihor Prytula.
 //
-//  Created by Ihor Prytula on 10.10.2020.
-//  Copyright © 2020 Ihor Prytula. All rights reserved.
-//
+
 #define GL_SILENCE_DEPRECATION
 
 #include "Window.hpp"

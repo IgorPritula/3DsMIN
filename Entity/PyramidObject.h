@@ -1,5 +1,5 @@
 //
-// Created by Ihor Prytula on 18.11.2020.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #ifndef INC_3DSMIN_PYRAMIDOBJECT_H

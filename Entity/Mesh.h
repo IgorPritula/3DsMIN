@@ -1,5 +1,5 @@
 //
-// Created by Ihor Prytula on 14.01.2021.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #ifndef INC_3DSMIN_MESH_H

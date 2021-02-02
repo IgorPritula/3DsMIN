@@ -1,9 +1,5 @@
 //
-//  MouseEvent.hpp
-//  OpenGl
-//
-//  Created by Ihor Prytula on 25.10.2020.
-//  Copyright © 2020 Ihor Prytula. All rights reserved.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #ifndef MouseEvent_hpp

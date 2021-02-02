@@ -1,10 +1,7 @@
 //
-//  functions.cpp
-//  3dViewr
+//  Copyright © 2021 Ihor Prytula.
 //
-//  Created by Igor Prytula on 12/30/18.
-//  Copyright © 2018 Ihor Prytula. All rights reserved.
-//
+
 #include "functions.hpp"
 
 //#include <unistd.h>

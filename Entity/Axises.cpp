@@ -1,5 +1,5 @@
 //
-// Created by Ihor Prytula on 08.01.2021.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #include "Axises.h"

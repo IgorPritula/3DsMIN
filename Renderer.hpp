@@ -1,9 +1,5 @@
 //
-//  Renderer.hpp
-//  OpenGl
-//
-//  Created by Ihor Prytula on 29.08.2020.
-//  Copyright © 2020 Ihor Prytula. All rights reserved.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #ifndef Renderer_hpp

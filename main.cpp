@@ -1,9 +1,5 @@
 //
-//  main.cpp
-//  3dViewr
-//
-//  Created by Ihor Prytula on 9/26/18.
-//  Copyright © 2018 Ihor Prytula. All rights reserved.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #define GL_SILENCE_DEPRECATION

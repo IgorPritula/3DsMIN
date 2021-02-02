@@ -1,5 +1,5 @@
 //
-// Created by Ihor Prytula on 09.01.2021.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #ifndef INC_3DSMIN_GRID_H

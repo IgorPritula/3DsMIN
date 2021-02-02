@@ -1,9 +1,5 @@
 //
-//  Vertex.h
-//  OpenGl
-//
-//  Created by Ihor Prytula on 28.09.2020.
-//  Copyright © 2020 Ihor Prytula. All rights reserved.
+//  Copyright © 2021 Ihor Prytula.
 //
 
 #ifndef Vertex_h
