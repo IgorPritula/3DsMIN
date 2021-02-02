@@ -41,11 +41,11 @@ void VertexArray::Unbind() const {
     glBindVertexArray(0);
 }
 
-void VertexArray::UpdateVerIndBuffer(const std::vector<Entity*>& entities, const VertexBuffer& vb, IndexBuffer& ib) const {
+void VertexArray::UpdateVerIndBuffer(const DM_EntityVec& entities, const VertexBuffer& vb, IndexBuffer& ib) const {
     std::vector<Vertex> all_vertex;
     std::vector<unsigned int> all_index;
     unsigned long vertexCount = 0;
-    for(auto entity : entities) {
+    for(const auto& entity : entities) {
         
         std::vector<Vertex> vertexies = entity->getVertices();
 //        TransformVertecies(vertexies, entity->getTransform());

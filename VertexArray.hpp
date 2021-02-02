@@ -13,6 +13,7 @@
 #include <vector>
 #include "Entity/Entity.hpp"
 #include "IndexBuffer.hpp"
+#include "Base.h"
 
 class VertexBufferLayout;
 
@@ -25,7 +26,7 @@ public:
     void AddBuffer(const VertexBuffer&, const VertexBufferLayout&);
     void Bind() const;
     void Unbind() const;
-    void UpdateVerIndBuffer(const std::vector<Entity*>&, const VertexBuffer&, IndexBuffer&) const;
+    void UpdateVerIndBuffer(const DM_EntityVec&, const VertexBuffer&, IndexBuffer&) const;
     void TransformVertecies(std::vector<Vertex>&, glm::mat4) const;
 };
 

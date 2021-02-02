@@ -11,11 +11,6 @@
 
 #include <stdio.h>
 
-#define DEF_VIEWPORT_W 600
-#define DEF_VIEWPORT_H 600
-
-#define MAX_VERTEX_NUM 1000000
-
 // @todo wrap each opengl function in GLCall
 #ifdef __APPLE__
 #define ASSERT(x) if (!x) __asm__("int $3")
@@ -31,5 +26,5 @@ void GLClearError();
 bool GLLogCall(const char*, const char*, int);
 
 void showFps();
-
+void DEBUG_run_as_macos_app();
 #endif /* functions_hpp */

@@ -9,7 +9,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <glm/gtc/type_ptr.hpp>
-#include "functions.hpp"
+#include "Base.h"
 #include "tests/TestTexture.hpp"
 #include "Event/WindowEvent.hpp"
 
@@ -130,7 +130,7 @@ void ImGuiUI::Render(EntityManager& entity_manager) {
 
 void ImGuiUI::Entities(EntityManager& entity_manager) {
     ImGui::Begin("Objects");
-    static Entity* c_entity = nullptr;
+    static DM_Entity c_entity = nullptr;
 
     // Right-click on blank space
     if (ImGui::IsWindowHovered(1) && ImGui::IsMouseReleased(1))

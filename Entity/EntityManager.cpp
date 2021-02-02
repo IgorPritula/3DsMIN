@@ -12,23 +12,23 @@
 
 #define DELETE_ENTITY(v,e) v.erase(std::remove(v.begin(), v.end(), e), v.end());
 
-Entity* EntityManager::Create(ObjectType cl, const std::string& name, EntityType type) {
-    Entity* entity = nullptr;
+DM_Entity EntityManager::Create(ObjectType cl, const std::string& name, EntityType type) {
+    DM_Entity entity(nullptr);
     switch (cl) {
         case ObjectType::Pyramid:
-            entity = new PyramidObject;
+            entity = std::make_shared<PyramidObject>();
             break;
         case ObjectType::Cube:
-            entity = new CubeObject;
+            entity = std::make_shared<CubeObject>();
             break;
         case ObjectType::Axises:
-            entity = new Axises;
+            entity = std::make_shared<Axises>();
             break;
         case ObjectType::Grid:
-            entity = new Grid;
+            entity = std::make_shared<Grid>();
             break;
         default:
-            entity = new CubeObject;
+            entity = std::make_shared<CubeObject>();
     }
     if(!name.empty()) {
         entity->setName(name);
@@ -39,8 +39,8 @@ Entity* EntityManager::Create(ObjectType cl, const std::string& name, EntityType
     return entity;
 }
 
-Entity* EntityManager::CreateMesh(const char* filename, const std::string& name, EntityType type) {
-    Mesh* entity = new Mesh(filename);
+DM_Entity EntityManager::CreateMesh(const char* filename, const std::string& name, EntityType type) {
+    std::shared_ptr<Mesh> entity = std::make_shared<Mesh>(filename);
     if(!entity->GetLoadStatus()) {
         return nullptr;
     }
@@ -53,7 +53,7 @@ Entity* EntityManager::CreateMesh(const char* filename, const std::string& name,
     return entity;
 }
 
-void EntityManager::Delete(Entity* entity) {
+void EntityManager::Delete(const DM_Entity& entity) {
     EntityType type = entity->GetType();
     switch (type) {
         case EntityType::Object:
@@ -66,16 +66,15 @@ void EntityManager::Delete(Entity* entity) {
             DELETE_ENTITY(m_Static, entity)
             break;
     }
-    delete entity;
     SetUpdateFlag(type);
 }
 
-void EntityManager::Save(Entity *ent) {
+void EntityManager::Save(const DM_Entity& ent) {
     ent->UpdateEntity();
     SetUpdateFlag(ent->GetType());
 }
 
-void EntityManager::addEntity(Entity* entity, EntityType type) {
+void EntityManager::addEntity(const DM_Entity& entity, EntityType type) {
     switch (type) {
         case EntityType::Object:
             m_Objects.push_back(entity);
@@ -89,13 +88,13 @@ void EntityManager::addEntity(Entity* entity, EntityType type) {
     }
 }
 
-std::vector<Entity*>& EntityManager::GetObjects() {
+DM_EntityVec& EntityManager::GetObjects() {
     return m_Objects;
 }
-std::vector<Entity*>& EntityManager::GetLights() {
+DM_EntityVec& EntityManager::GetLights() {
     return m_Lights;
 }
-std::vector<Entity*>& EntityManager::GetStatic() {
+DM_EntityVec& EntityManager::GetStatic() {
     return m_Static;
 }
 

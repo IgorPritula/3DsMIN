@@ -42,6 +42,7 @@
 #include "Event/WindowEvent.hpp"
 #include "ImGui/ImGuiUI.h"
 #include "Framebuffer.h"
+#include "Base.h"
 
 #ifdef _WIN32
 // Use the High Performance Graphics.
@@ -94,7 +95,7 @@ int main(int argc, char* argv[]) {
 //            for(int k = 1; k <= 6; k++) {
 //                std::ostringstream label;
 //                label << "Cube" << i << j << k;
-//                Entity *ent = entity_manager.Create(ObjectType::Cube, label.str());
+//                DM_Entity ent = entity_manager.Create(ObjectType::Cube, label.str());
 //                ent->setPosition({(float)k * 2.5 - 8.75, (float)j * 2.5 - 8.75, (float)i * -2.5 - 10.0});
 //                entity_manager.Save(ent);
 //            }
@@ -121,7 +122,7 @@ int main(int argc, char* argv[]) {
 
     // Lights.
     glm::vec3 lightPos(0.0f, 10.0f, 5.0f);
-    Entity* lightCube = entity_manager.Create(ObjectType::Cube, "White Lamp", EntityType::Light);
+    DM_Entity lightCube = entity_manager.Create(ObjectType::Cube, "White Lamp", EntityType::Light);
     lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
     lightCube->setPosition(lightPos);
     entity_manager.Save(lightCube);

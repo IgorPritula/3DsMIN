@@ -29,7 +29,7 @@ public:
 private:
 
     Window* m_window;
-    Entity* m_selectedEntity;
+    DM_Entity m_selectedEntity;
     Framebuffer* m_Framebuffer;
     Camera* m_Camera;
 
