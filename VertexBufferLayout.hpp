@@ -1,13 +1,8 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
 #ifndef VertexBufferLayout_hpp
 #define VertexBufferLayout_hpp
 
 #include <vector>
 #include <GL/glew.h>
-#include "Renderer.hpp"
 
 struct VertexBufferElement {
     unsigned int type;
@@ -20,7 +15,6 @@ struct VertexBufferElement {
             case GL_UNSIGNED_INT: return 4;
             case GL_UNSIGNED_BYTE: return 1;
         }
-        ASSERT(false);
         return 0;
     }
 };

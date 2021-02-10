@@ -1,7 +1,3 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
 #ifndef Camera_hpp
 #define Camera_hpp
 
@@ -9,7 +5,6 @@
 #include <cmath>
 #include <functional>
 #include <glm/gtc/matrix_transform.hpp>
-#include "functions.hpp"
 #include "Vertex.h"
 #include "Event/Event.hpp"
 #include "Event/KeyEvent.hpp"

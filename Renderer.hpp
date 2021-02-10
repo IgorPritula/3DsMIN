@@ -1,7 +1,3 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
 #ifndef Renderer_hpp
 #define Renderer_hpp
 
@@ -13,7 +9,6 @@
 #include <vector>
 #include "Entity/Entity.hpp"
 #include "Event/WindowEvent.hpp"
-#include "functions.hpp"
 
 class Renderer {
 public:

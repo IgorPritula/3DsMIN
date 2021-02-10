@@ -1,13 +1,6 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
+#ifndef INC_3DSMIN_LOG_H
+#define INC_3DSMIN_LOG_H
 
-#ifndef functions_hpp
-#define functions_hpp
-
-#include <stdio.h>
-
-// @todo wrap each opengl function in GLCall
 #ifdef __APPLE__
 #define ASSERT(x) if (!x) __asm__("int $3")
 #else
@@ -21,6 +14,4 @@ void GLClearError();
 
 bool GLLogCall(const char*, const char*, int);
 
-void showFps();
-void DEBUG_run_as_macos_app();
-#endif /* functions_hpp */
+#endif //INC_3DSMIN_LOG_H

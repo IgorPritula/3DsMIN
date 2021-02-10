@@ -34,7 +34,6 @@ add_executable(3DsMIN
         vendor/imgui/imgui_widgets.cpp
         Camera.cpp
         Entity/CubeObject.cpp
-        functions.cpp
         IndexBuffer.cpp
         main.cpp
         Renderer.cpp
@@ -50,7 +49,9 @@ add_executable(3DsMIN
         Entity/Axises.cpp
         Entity/Grid.cpp
         Helper/MeshLoader.cpp
-        Entity/Mesh.cpp)
+        Entity/Mesh.cpp
+        Log.cpp
+        Debug/Debug.cpp)
 
 target_link_libraries(3DsMIN glfw)
 target_link_libraries(3DsMIN ${OPENGL_LIBRARY})

@@ -1,12 +1,9 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
 #define GL_SILENCE_DEPRECATION
 #include "Texture.hpp"
 #include <iostream>
 #include <GL/glew.h>
 #include "stb_image.h"
+#include "Log.h"
 
 Texture::Texture(const std::string &path, int format)
     : m_RendererID(0), m_FilePath(path), m_localBuffer(nullptr),
@@ -23,10 +20,10 @@ Texture::Texture(const std::string &path, int format)
     GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
     
     // Mandatory parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);    // set texture wrapping to GL_REPEAT (default wrapping method)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));   // set texture filtering parameters
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));    // set texture wrapping to GL_REPEAT (default wrapping method)
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
     
     GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, m_Width, m_Height, 0, format, GL_UNSIGNED_BYTE, m_localBuffer));
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
@@ -34,7 +31,7 @@ Texture::Texture(const std::string &path, int format)
 }
 
 Texture::~Texture() {
-    glDeleteTextures(1, &m_RendererID);
+    GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
 void Texture::Bind(unsigned int slot /*= 0*/) const {
@@ -43,5 +40,5 @@ void Texture::Bind(unsigned int slot /*= 0*/) const {
 }
 
 void Texture::Unbind() const {
-    glBindTexture(GL_TEXTURE_2D, 0);
+    GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }

@@ -1,16 +1,3 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
-#define GL_SILENCE_DEPRECATION
-
-//#define SHOW_FPS
-//#define DIS_V_SYNC
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -34,13 +21,14 @@
 #include "Entity/EntityManager.h"
 #include "Window.hpp"
 #include "Camera.hpp"
-#include "functions.hpp"
+#include "Debug/Debug.h"
 #include "Event/WindowEvent.hpp"
 #include "ImGui/ImGuiUI.h"
 #include "Framebuffer.h"
 #include "Base.h"
 
 #ifdef _WIN32
+#include <windows.h>
 // Use the High Performance Graphics.
 extern "C" {
 _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;

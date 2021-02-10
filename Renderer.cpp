@@ -1,10 +1,6 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
 #define GL_SILENCE_DEPRECATION
-
 #include "Renderer.hpp"
+#include "Log.h"
 
 void Renderer::Draw(const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader) {
     shader.use();
@@ -29,14 +25,14 @@ void Renderer::DrawEntities(std::vector<Entity*> &entities, const VertexArray &v
 
 void Renderer::Clear() {
 //    glClearColor(57.0 / 255.0, 57.0 / 255.0, 57.0 / 255.0, 0.0f);
-    glClearColor(0.0, 0.0, 0.0, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLCall(glClearColor(0.0, 0.0, 0.0, 0.0f));
+    GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
 void Renderer::setViewPort(int x, int y, uint32_t width, uint32_t height) {
-    glViewport(x, y, width, height);
+    GLCall(glViewport(x, y, width, height));
 }
 
 void Renderer::initSettings() {
-    glEnable(GL_DEPTH_TEST);
+    GLCall(glEnable(GL_DEPTH_TEST));
 }

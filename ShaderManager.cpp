@@ -1,7 +1,3 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
 #define GL_SILENCE_DEPRECATION
 
 #include <iostream>
@@ -10,7 +6,7 @@
 #include <fstream>
 #include <sstream>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "Log.h"
 
 ShaderManager::ShaderManager(const char* vertexPath, const char* fragmentPath)
 {
@@ -27,10 +23,10 @@ ShaderManager::ShaderManager(const char* vertexPath, const char* fragmentPath)
     
     // vertex Shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vShaderCode, NULL);
-    glCompileShader(vertex);
+    GLCall(glShaderSource(vertex, 1, &vShaderCode, NULL));
+    GLCall(glCompileShader(vertex));
     // print compile errors if any
-    glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+    GLCall(glGetShaderiv(vertex, GL_COMPILE_STATUS, &success));
     if(!success)
     {
         glGetShaderInfoLog(vertex, 512, NULL, infoLog);
@@ -39,10 +35,10 @@ ShaderManager::ShaderManager(const char* vertexPath, const char* fragmentPath)
     
     // similiar for Fragment Shader
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fShaderCode, NULL);
-    glCompileShader(fragment);
+    GLCall(glShaderSource(fragment, 1, &fShaderCode, NULL));
+    GLCall(glCompileShader(fragment));
     // print compile errors if any
-    glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+    GLCall(glGetShaderiv(fragment, GL_COMPILE_STATUS, &success));
     if(!success)
     {
         glGetShaderInfoLog(fragment, 512, NULL, infoLog);
@@ -51,11 +47,11 @@ ShaderManager::ShaderManager(const char* vertexPath, const char* fragmentPath)
     
     // shader Program
     m_ID = glCreateProgram();
-    glAttachShader(m_ID, vertex);
-    glAttachShader(m_ID, fragment);
-    glLinkProgram(m_ID);
+    GLCall(glAttachShader(m_ID, vertex));
+    GLCall(glAttachShader(m_ID, fragment));
+    GLCall(glLinkProgram(m_ID));
     // print linking errors if any
-    glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
+    GLCall(glGetProgramiv(m_ID, GL_LINK_STATUS, &success));
     if(!success)
     {
         glGetProgramInfoLog(m_ID, 512, NULL, infoLog);
@@ -63,8 +59,8 @@ ShaderManager::ShaderManager(const char* vertexPath, const char* fragmentPath)
     }
     
     // delete the shaders as they're linked into our program now and no longer necessery
-    glDeleteShader(vertex);
-    glDeleteShader(fragment);
+    GLCall(glDeleteShader(vertex));
+    GLCall(glDeleteShader(fragment));
 }
 
 void ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragmentPath) {
@@ -97,18 +93,18 @@ void ShaderManager::loadShader(const GLchar* vertexPath, const GLchar* fragmentP
 
 void ShaderManager::use()
 {
-    glUseProgram(m_ID);
+    GLCall(glUseProgram(m_ID));
 }
 
 void ShaderManager::setInt(const std::string &name, int value) const
 {
-    glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value);
+    GLCall(glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value));
 }
 
 // ------------------------------------------------------------------------
 void ShaderManager::setFloat(const std::string &name, float value) const
 {
-    glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
+    GLCall(glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value));
 }
 
 void ShaderManager::setUniform4f(const std::string &name, float v0, float v1, float v2, float v3) const
@@ -117,20 +113,20 @@ void ShaderManager::setUniform4f(const std::string &name, float v0, float v1, fl
 }
 
 void ShaderManager::setMatrix4fv(const std::string &name, glm::mat4 trans) {
-    glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(trans));
+    GLCall(glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(trans)));
 }
 
 void ShaderManager::setVec3(const std::string &name, const glm::vec3 &value) const
 {
-    glUniform3fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]);
+    GLCall(glUniform3fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]));
 }
 
 void ShaderManager::setVec4(const std::string &name, const glm::vec4 &value) const
 {
-    glUniform4fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]);
+    GLCall(glUniform4fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]));
 }
 
 ShaderManager::~ShaderManager() {
-    glDeleteProgram(m_ID);
+    GLCall(glDeleteProgram(m_ID));
 }
 

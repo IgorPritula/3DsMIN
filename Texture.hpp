@@ -1,13 +1,8 @@
-//
-//  Copyright © 2021 Ihor Prytula.
-//
-
 #ifndef Texture_hpp
 #define Texture_hpp
 
 #include <stdio.h>
 #include <string>
-#include "functions.hpp"
 
 class Texture {
 private:
