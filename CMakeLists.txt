@@ -7,6 +7,7 @@ FILE(COPY res DESTINATION "${CMAKE_BINARY_DIR}")
 FILE(COPY res/imgui.ini DESTINATION "${CMAKE_BINARY_DIR}")
 
 include_directories(.)
+include_directories(src)
 include_directories(vendor/GLFW/include)
 include_directories(vendor/glm)
 include_directories(vendor/glew/include)
@@ -21,37 +22,34 @@ add_subdirectory(vendor/glm)
 find_library(OPENGL_LIBRARY NAMES OpenGL.framework OpenGL opengl32)
 
 add_executable(3DsMIN
-        Event/Event.cpp
-        Event/KeyEvent.cpp
-        Event/MouseEvent.cpp
-        Event/WindowEvent.cpp
-        tests/TestTexture.cpp
+        main.cpp
+        src/Event/Event.cpp
+        src/tests/TestTexture.cpp
         vendor/glew/src/glew.c
         vendor/imgui/backends/imgui_impl_glfw.cpp
         vendor/imgui/backends/imgui_impl_opengl3.cpp
         vendor/imgui/imgui.cpp
         vendor/imgui/imgui_draw.cpp
         vendor/imgui/imgui_widgets.cpp
-        Camera.cpp
-        Entity/CubeObject.cpp
-        IndexBuffer.cpp
-        main.cpp
-        Renderer.cpp
-        ShaderManager.cpp
-        Texture.cpp
-        VertexArray.cpp
-        VertexBuffer.cpp
-        VertexBufferLayout.cpp
-        Window.cpp
-        ImGui/ImGuiUI.cpp
-        Framebuffer.cpp
-        Entity/EntityManager.cpp
-        Entity/Axises.cpp
-        Entity/Grid.cpp
-        Helper/MeshLoader.cpp
-        Entity/Mesh.cpp
-        Log.cpp
-        Debug/Debug.cpp)
+        src/Camera/Camera.cpp
+        src/Entity/CubeObject.cpp
+        src/Renderer/IndexBuffer.cpp
+        src/Renderer/Renderer.cpp
+        src/Renderer/ShaderManager.cpp
+        src/Renderer/Texture.cpp
+        src/Renderer/VertexArray.cpp
+        src/Renderer/VertexBuffer.cpp
+        src/Window/Window.cpp
+        src/ImGui/ImGuiUI.cpp
+        src/Renderer/Framebuffer.cpp
+        src/Entity/EntityManager.cpp
+        src/Entity/Axises.cpp
+        src/Entity/Grid.cpp
+        src/Helper/MeshLoader.cpp
+        src/Entity/Mesh.cpp
+        src/Renderer/Log.cpp
+        src/Debug/Debug.cpp
+        src/Application.cpp)
 
 target_link_libraries(3DsMIN glfw)
 target_link_libraries(3DsMIN ${OPENGL_LIBRARY})
