@@ -1,10 +1,14 @@
 #ifndef INC_3DSMIN_LOG_H
 #define INC_3DSMIN_LOG_H
 
-#ifdef __APPLE__
-#define ASSERT(x) if (!x) __asm__("int $3")
+#ifdef DM_DEBUG_MOD
+    #ifdef _WIN32
+    #define ASSERT(x) if (!x) __debugbreak()
+    #else
+    #define ASSERT(x) if (!x) __asm__("int $3")
+    #endif
 #else
-#define ASSERT(x) if (!x) __asm { int 3 }
+    #define ASSERT(x)
 #endif
 #define GLCall(x) GLClearError(); \
 x; \
