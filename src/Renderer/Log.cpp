@@ -16,3 +16,7 @@ bool GLLogCall(const char* function, const char* file, int line)
     }
     return true;
 }
+
+void Logger(const char* mess, const char* file, int line) {
+    std::cout << "[3DsMIN INFO] (" << mess << "): " << file << ":" << line << std::endl;
+}

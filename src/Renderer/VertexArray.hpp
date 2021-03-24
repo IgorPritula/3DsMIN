@@ -18,7 +18,7 @@ public:
     void AddBuffer(const VertexBuffer&, const VertexBufferLayout&);
     void Bind() const;
     void Unbind() const;
-    void UpdateVerIndBuffer(const DM_EntityVec&, const VertexBuffer&, IndexBuffer&) const;
+    void UpdateVerIndBuffer(const DM_EntityVec&, VertexBuffer&, IndexBuffer&) const;
     void TransformVertecies(std::vector<Vertex>&, glm::mat4) const;
 };
 

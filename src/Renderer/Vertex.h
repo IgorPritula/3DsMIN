@@ -10,13 +10,13 @@
 
 struct Vertex {
     glm::vec3 Position;
-    glm::vec4 Color;
+    glm::vec3 Color;
     glm::vec2 TexCoord;
     glm::vec3 Normal;
     float TexID;
     
     Vertex() = default;
-    Vertex(glm::vec3 pos, glm::vec4 col = {RGB(145), RGB(145), RGB(145), 1.0f}, glm::vec2 tex = glm::vec2(0.0f), float texId = -1.0f)
+    Vertex(glm::vec3 pos, glm::vec3 col = {RGB(145), RGB(145), RGB(145)}, glm::vec2 tex = glm::vec2(0.0f), float texId = -1.0f)
     : Position(pos), Color(col), TexCoord(tex), TexID(texId) {}
 };
 

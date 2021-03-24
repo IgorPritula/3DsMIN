@@ -34,7 +34,7 @@ void VertexArray::Unbind() const {
     GLCall(glBindVertexArray(0));
 }
 
-void VertexArray::UpdateVerIndBuffer(const DM_EntityVec& entities, const VertexBuffer& vb, IndexBuffer& ib) const {
+void VertexArray::UpdateVerIndBuffer(const DM_EntityVec& entities, VertexBuffer& vb, IndexBuffer& ib) const {
     std::vector<Vertex> all_vertex;
     std::vector<unsigned int> all_index;
     unsigned long vertexCount = 0;
@@ -53,7 +53,7 @@ void VertexArray::UpdateVerIndBuffer(const DM_EntityVec& entities, const VertexB
         vertexCount = all_vertex.size();
     }
     
-    vb.UpdateBuffer(all_vertex.data(), all_vertex.size() * sizeof(Vertex));
+    vb.UpdateBuffer(all_vertex.data(), all_vertex.size());
     ib.UpdateBuffer(all_index.data(), all_index.size());
 }
 

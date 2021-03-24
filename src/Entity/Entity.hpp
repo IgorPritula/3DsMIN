@@ -27,7 +27,7 @@ class Entity {
 public:
 
     Entity(std::string name) : m_Name(std::move(name)), m_type(EntityType::Object), m_Position(0.0f),
-    m_Rotation(0.0f), m_Scale(1.0f), m_color({RGB(145), RGB(145), RGB(145), 1.0f}){}
+    m_Rotation(0.0f), m_Scale(1.0f), m_color({RGB(145), RGB(145), RGB(145)}){}
 
     virtual std::vector<Vertex> getVertices() const { return m_Vertices; };
     virtual std::vector<unsigned int> getIndeces() const { return m_indices; };
@@ -35,8 +35,8 @@ public:
     virtual std::string getName() const { return m_Name; };
     virtual void setName(std::string name) { m_Name = std::move(name); };
     
-    virtual void setColor(glm::vec4 color) { m_color = color; };
-    virtual glm::vec4 getColor() const { return m_color; };
+    virtual void setColor(glm::vec3 color) { m_color = color; };
+    virtual glm::vec3 getColor() const { return m_color; };
 
     virtual void setPosition(glm::vec3 pos) { m_Position = pos;};
     virtual glm::vec3 getPosition() const { return m_Position; };
@@ -82,7 +82,7 @@ protected:
     glm::vec3 m_Rotation;
     glm::vec3 m_Scale;
     glm::mat4 m_Transform;
-    glm::vec4 m_color;
+    glm::vec3 m_color;
 
 private:
     EntityType m_type;

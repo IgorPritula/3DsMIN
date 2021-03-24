@@ -3,17 +3,11 @@
 #include "Vertex.h"
 #include "Log.h"
 
-VertexBuffer::VertexBuffer(const void* data, unsigned long size) {
+VertexBuffer::VertexBuffer(unsigned long count, const void* data, bool dynamic) : m_Count(count), m_Capacity(count), m_Dynamic(dynamic) {
     GLCall(glGenBuffers(1, &m_RendererID));
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
-}
-
-VertexBuffer::VertexBuffer(unsigned long v_count) {
-    GLCall(glGenBuffers(1, &m_RendererID));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
-//    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * v_count, nullptr, GL_DYNAMIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * count, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
+    DM_LOG(dynamic ? "Create: dynamic vertex buffer" : "Create: static vertex buffer")
 }
 
 VertexBuffer::~VertexBuffer() {
@@ -28,7 +22,14 @@ void VertexBuffer::Unbind() const{
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
-void VertexBuffer::UpdateBuffer(const void* data, unsigned long size) const {
+void VertexBuffer::UpdateBuffer(const void* data, unsigned int count) {
     Bind();
-    GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, data));
+    if (m_Capacity < count) {
+        GLCall(glBufferData(GL_ARRAY_BUFFER, count * sizeof(Vertex), data, m_Dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
+        m_Capacity = count;
+    }
+    else {
+        GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(Vertex), data));
+    }
+    m_Count = count;
 }
