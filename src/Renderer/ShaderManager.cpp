@@ -114,6 +114,10 @@ void ShaderManager::setMatrix4fv(const std::string &name, glm::mat4 trans) {
     GLCall(glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(trans)));
 }
 
+void ShaderManager::setMatrix3fv(const std::string &name, glm::mat3 trans) {
+    GLCall(glUniformMatrix3fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(trans)));
+}
+
 void ShaderManager::setVec3(const std::string &name, const glm::vec3 &value) const
 {
     GLCall(glUniform3fv(glGetUniformLocation(m_ID, name.c_str()), 1, &value[0]));

@@ -47,12 +47,10 @@ int Application::Run() {
     // Common shader.
     ShaderManager lightintShader("res/vertex_color.shader", "res/fragment_color.shader");
     lightintShader.use();
-    lightintShader.setMatrix4fv("transform", glm::mat4(1.0f));
+
     // Light sours shader.
     ShaderManager lightSourseShader("res/vertex_color.shader", "res/light_fragment.shader");
     lightSourseShader.use();
-    lightSourseShader.setMatrix4fv("transform", glm::mat4(1.0f));
-
 
     EntityManager entity_manager;
 //    entity_manager.CreateMesh("filepath/mesh.stl");
@@ -158,7 +156,7 @@ int Application::Run() {
 
         camera.OnUpdate(deltaTime);
         glm::mat4 perspective = camera.GetViewProjectionMatrix();
-        lightintShader.setMatrix4fv("perspective", perspective);
+        lightintShader.setMatrix4fv("uPerspective", perspective);
         lightintShader.setVec3("lightPos", lightCube->getPosition());
         lightintShader.setVec3("lightColor", lightCube->getColor());
 
@@ -168,17 +166,17 @@ int Application::Run() {
             entity_manager.RemoveUpdateFlag(EntityType::Object);
         }
         // Draw objects.
-        Renderer::Draw(va, ib, lightintShader);
+        Renderer::DrawEntities(entity_manager.GetObjects(), va, ib, lightintShader);
 
         lightSourseShader.use();
-        lightSourseShader.setMatrix4fv("perspective", perspective);
+        lightSourseShader.setMatrix4fv("uPerspective", perspective);
         // Update lights vertex buffer if entities was updated.
         if(entity_manager.GetUpdateFlag(EntityType::Light)) {
             light_va.UpdateVerIndBuffer(entity_manager.GetLights(), light_vb, light_ib);
             entity_manager.RemoveUpdateFlag(EntityType::Light);
         }
         // Draw lights.
-        Renderer::Draw(light_va, light_ib, lightSourseShader);
+        Renderer::DrawEntities(entity_manager.GetLights(), light_va, light_ib, lightSourseShader);
 
         // Draw static.
         Renderer::DrawLines(static_va, static_ib, lightSourseShader);

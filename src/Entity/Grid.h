@@ -15,11 +15,11 @@ public:
             m_Vertices.push_back({{size/2, 0.0f, i - (size/2)}, getColor(), glm::vec2(0.0f), -1.0f});
         }
 
-        m_indices.resize(size * 4);
-        for (int i = 0; i < m_indices.size(); i++)
-            m_indices[i] = i;
+        m_Indices.resize(size * 4);
+        for (int i = 0; i < m_Indices.size(); i++)
+            m_Indices[i] = i;
 
-        m_OriginVertices = m_Vertices;
+//        m_OriginVertices = m_Vertices;
     }
 };
 

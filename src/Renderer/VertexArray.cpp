@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iterator>
 #include "Log.h"
+#include <chrono>
+#include <iostream>
 
 VertexArray::VertexArray() {
     GLCall(glGenVertexArrays(1, &m_RendererID));
@@ -39,13 +41,12 @@ void VertexArray::UpdateVerIndBuffer(const DM_EntityVec& entities, VertexBuffer&
     std::vector<unsigned int> all_index;
     unsigned long vertexCount = 0;
     for(const auto& entity : entities) {
-        
-        std::vector<Vertex> vertexies = entity->getVertices();
-//        TransformVertecies(vertexies, entity->getTransform());
+
+        const std::vector<Vertex>& vertexies = entity->getVertices();
         all_vertex.insert(all_vertex.end(), vertexies.begin(), vertexies.end());
-        
-        std::vector<unsigned int> indeces = entity->getIndeces();
-        std::transform(indeces.begin(), indeces.end(), std::back_inserter(all_index),
+
+        const std::vector<unsigned int>& indices = entity->getIndices();
+        std::transform(indices.begin(), indices.end(), std::back_inserter(all_index),
         [vertexCount] (unsigned int n) {
             return n+vertexCount;
             
@@ -55,10 +56,4 @@ void VertexArray::UpdateVerIndBuffer(const DM_EntityVec& entities, VertexBuffer&
     
     vb.UpdateBuffer(all_vertex.data(), all_vertex.size());
     ib.UpdateBuffer(all_index.data(), all_index.size());
-}
-
-void VertexArray::TransformVertecies(std::vector<Vertex>& vertexies, glm::mat4 trans) const {
-    for (auto &vertex : vertexies) {
-        vertex.Position = trans * glm::vec4(vertex.Position, 1.0f);
-    }
 }

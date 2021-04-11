@@ -50,8 +50,8 @@ public:
             m_Vertices[i].Normal = {cube_vertices[5 + vertex], cube_vertices[6 + vertex], cube_vertices[7 + vertex]};
             m_Vertices[i].TexID = -1.0f;
         }
-        
-        m_indices = {
+
+        m_Indices = {
             0, 1, 3,
             1, 2, 3,
             
@@ -70,7 +70,7 @@ public:
             20, 21, 23,
             21, 22, 23,
         };
-        m_OriginVertices = m_Vertices;
+//        m_OriginVertices = m_Vertices;
     }
     
 //    inline const char* getName() const override {return "Cube";}

@@ -68,7 +68,7 @@ void EntityManager::Delete(const DM_Entity& entity) {
 
 void EntityManager::Save(const DM_Entity& ent) {
     ent->UpdateEntity();
-    SetUpdateFlag(ent->GetType());
+//    SetUpdateFlag(ent->GetType());
 }
 
 void EntityManager::addEntity(const DM_Entity& entity, EntityType type) {

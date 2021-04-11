@@ -11,16 +11,23 @@ out float TexID;
 out vec3 FragPos;
 out vec3 Normal;
 
-uniform mat4 perspective;
-uniform mat4 transform;
+uniform mat4 uPerspective;
+uniform mat4 uTransform;
+uniform mat3 uNormalTrans;
+uniform vec3 uColor;
 
 // output a color to the fragment shader
 void main()
 {
-    gl_Position = perspective * transform * vec4(aPos, 1.0f);
-    FragPos = vec3(transform * vec4(aPos, 1.0));
-    Color = vec4(aColor, 1.0);
+    gl_Position = uPerspective * uTransform * vec4(aPos, 1.0f);
+    FragPos = vec3(uTransform * vec4(aPos, 1.0));
+    if(uColor.x > 0) {
+        Color = vec4(uColor, 1.0);
+    }
+    else {
+        Color = vec4(aColor, 1.0);
+    }
     TexCoord = aTexCoord;
     TexID = aTexID;
-    Normal = aNormal;
+    Normal = uNormalTrans * aNormal;
 }

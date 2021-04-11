@@ -42,7 +42,7 @@ public:
             m_Vertices[i].TexID = -1.0f;
         }
 
-        m_indices = {
+        m_Indices = {
                 0, 1, 3,
                 1, 2, 3,
 
@@ -51,7 +51,7 @@ public:
                 10, 11, 12,
                 13, 14, 15
         };
-        m_OriginVertices = m_Vertices;
+//        m_OriginVertices = m_Vertices;
     }
 };
 

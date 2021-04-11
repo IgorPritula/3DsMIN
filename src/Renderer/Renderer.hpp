@@ -14,7 +14,7 @@ class Renderer {
 public:
     static void Draw(const VertexArray& va, const IndexBuffer& ib, ShaderManager& shader);
     static void DrawLines(const VertexArray& va, const IndexBuffer& ib, ShaderManager& shader);
-    static void DrawEntities(std::vector<Entity*> &entities, const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader);
+    static void DrawEntities(std::vector<DM_Entity> &entities, const VertexArray &va, const IndexBuffer &ib, ShaderManager &shader);
     static void Clear();
     static void setViewPort(int, int, uint32_t, uint32_t);
     static void initSettings();

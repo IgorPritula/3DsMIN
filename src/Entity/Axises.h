@@ -25,8 +25,8 @@ public:
             m_Vertices[i].Normal = glm::vec3(0.0f);
             m_Vertices[i].TexID = -1.0f;
         }
-        m_indices = { 0, 1, 2, 3, 4, 5 };
-        m_OriginVertices = m_Vertices;
+        m_Indices = { 0, 1, 2, 3, 4, 5 };
+//        m_OriginVertices = m_Vertices;
     }
 
 protected:
