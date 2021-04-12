@@ -11,26 +11,11 @@ bool MeshLoader::LoadMeshSTL(const char* filename, std::vector<Vertex>& vertices
         for(size_t itri = 0; itri < mesh.num_tris(); ++itri) {
             const float* n = mesh.tri_normal(itri);
             normal.x = n[0]; normal.y = n[1]; normal.z = n[2];
-            if (normal.x == -0){
-                yellow = true;
-            }
-//            if (normal.y == -0){
-//                yellow = true;
-//            }
-//            if (normal.z == -0){
-//                yellow = true;
-//            }
             for(size_t icorner = 0; icorner < 3; ++icorner) {
                 const float* c = mesh.vrt_coords(mesh.tri_corner_ind(itri, icorner));
                 pos.x = c[0]; pos.y = c[1]; pos.z = c[2];
                 ver.Position = pos;
                 ver.Normal = normal;
-                if (yellow) {
-                    ver.Color = glm::vec3(RGB(255),RGB(255), 0);
-                }
-                else {
-                    ver.Color = glm::vec3(RGB(145), RGB(145), RGB(145));
-                }
                 vertices.push_back(ver);
             }
             yellow = false;

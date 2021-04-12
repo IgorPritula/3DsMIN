@@ -583,8 +583,10 @@ bool ReadStlFile_ASCII(const char* filename,
         
       //  read the position
         CoordWithIndex <number_t, index_t> c;
-        for(size_t i = 0; i < 3; ++i)
+        for(size_t i = 0; i < 3; ++i) {
           c[i] = static_cast<number_t> (atof(tokens[i+1].c_str()));
+          coordsOut.push_back(c[i]);
+        }
         c.index = static_cast<index_t>(coordsWithIndex.size());
         coordsWithIndex.push_back(c);
         ++numFaceVrts;
@@ -628,7 +630,7 @@ bool ReadStlFile_ASCII(const char* filename,
 
   solidRangesOut.push_back(static_cast<index_t> (trisOut.size() / 3));
 
-  RemoveDoubles (coordsOut, trisOut, coordsWithIndex);
+//  RemoveDoubles (coordsOut, trisOut, coordsWithIndex);
 
   return true;
 }
@@ -676,8 +678,10 @@ bool ReadStlFile_BINARY(const char* filename,
 
     for(size_t ivrt = 1; ivrt < 4; ++ivrt){
       CoordWithIndex <number_t, index_t> c;
-      for(size_t i = 0; i < 3; ++i)
+      for(size_t i = 0; i < 3; ++i){
         c[i] = d[ivrt * 3 + i];
+        coordsOut.push_back(c[i]);
+      }
       c.index = static_cast<index_t>(coordsWithIndex.size());
       coordsWithIndex.push_back(c);
     }
@@ -694,7 +698,7 @@ bool ReadStlFile_BINARY(const char* filename,
   solidRangesOut.push_back(0);
   solidRangesOut.push_back(static_cast<index_t> (trisOut.size() / 3));
 
-  RemoveDoubles (coordsOut, trisOut, coordsWithIndex);
+//  RemoveDoubles (coordsOut, trisOut, coordsWithIndex);
 
   return true;
 }
