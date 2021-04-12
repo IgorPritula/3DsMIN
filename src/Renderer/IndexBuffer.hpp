@@ -2,11 +2,8 @@
 #define IndexBuffer_hpp
 
 class IndexBuffer {
-    unsigned int m_RendererID;
-    unsigned int m_Count;
 public:
-    IndexBuffer(const unsigned int*, unsigned int);
-    IndexBuffer(unsigned int count = 1000);
+    IndexBuffer(unsigned int count = 1000, const void* data = nullptr, bool dynamic = false);
     ~IndexBuffer();
     
     void Bind() const;
@@ -16,6 +13,12 @@ public:
         return m_Count;
     }
     void UpdateBuffer(const unsigned int*, unsigned int);
+
+private:
+    unsigned int m_RendererID;
+    unsigned int m_Count;
+    unsigned int m_Capacity;
+    bool m_Dynamic;
 };
 
 #endif /* IndexBuffer_hpp */

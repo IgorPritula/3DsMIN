@@ -9,6 +9,7 @@
 #define DELETE_ENTITY(v,e) v.erase(std::remove(v.begin(), v.end(), e), v.end());
 
 DM_Entity EntityManager::Create(ObjectType cl, const std::string& name, EntityType type) {
+    // @todo check for MAX_VERTEX_NUM
     DM_Entity entity(nullptr);
     switch (cl) {
         case ObjectType::Pyramid:
@@ -67,7 +68,7 @@ void EntityManager::Delete(const DM_Entity& entity) {
 
 void EntityManager::Save(const DM_Entity& ent) {
     ent->UpdateEntity();
-    SetUpdateFlag(ent->GetType());
+//    SetUpdateFlag(ent->GetType());
 }
 
 void EntityManager::addEntity(const DM_Entity& entity, EntityType type) {

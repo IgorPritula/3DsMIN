@@ -20,13 +20,13 @@ public:
         for (int i = 0; i < m_Vertices.size(); i++) {
             int vertex = 8 * i;
             m_Vertices[i].Position = {axises_vertices[0 + vertex], axises_vertices[1 + vertex], axises_vertices[2 + vertex]};
-            m_Vertices[i].Color = {RGB(axises_vertices[5 + vertex]), RGB(axises_vertices[6 + vertex]), RGB(axises_vertices[7 + vertex]), 1.0f};
+            m_Vertices[i].Color = {RGB(axises_vertices[5 + vertex]), RGB(axises_vertices[6 + vertex]), RGB(axises_vertices[7 + vertex])};
             m_Vertices[i].TexCoord = {axises_vertices[3 + vertex], axises_vertices[4 + vertex]};
             m_Vertices[i].Normal = glm::vec3(0.0f);
             m_Vertices[i].TexID = -1.0f;
         }
-        m_indices = { 0, 1, 2, 3, 4, 5 };
-        m_OriginVertices = m_Vertices;
+        m_Indices = { 0, 1, 2, 3, 4, 5 };
+//        m_OriginVertices = m_Vertices;
     }
 
 protected:

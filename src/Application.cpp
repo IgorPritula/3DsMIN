@@ -47,12 +47,10 @@ int Application::Run() {
     // Common shader.
     ShaderManager lightintShader("res/vertex_color.shader", "res/fragment_color.shader");
     lightintShader.use();
-    lightintShader.setMatrix4fv("transform", glm::mat4(1.0f));
+
     // Light sours shader.
     ShaderManager lightSourseShader("res/vertex_color.shader", "res/light_fragment.shader");
     lightSourseShader.use();
-    lightSourseShader.setMatrix4fv("transform", glm::mat4(1.0f));
-
 
     EntityManager entity_manager;
 //    entity_manager.CreateMesh("filepath/mesh.stl");
@@ -76,7 +74,7 @@ int Application::Run() {
     VertexArray va;
     va.Bind();
     // Vertex buffer.
-    VertexBuffer vb(MAX_VERTEX_NUM);
+    VertexBuffer vb;
     VertexBufferLayout layout(sizeof(Vertex));
     layout.Push<float>(V_COUNT(Vertex::Position));
     layout.Push<float>(V_COUNT(Vertex::Color));
@@ -85,27 +83,27 @@ int Application::Run() {
     layout.Push<float>(V_COUNT(Vertex::TexID));
     va.AddBuffer(vb, layout);
     // bind the Element Array Buffer
-    IndexBuffer ib(MAX_VERTEX_NUM);
+    IndexBuffer ib;
     // add all objects to vertex and index buffer
     va.UpdateVerIndBuffer(entity_manager.GetObjects(), vb, ib);
 
     // Lights.
     glm::vec3 lightPos(0.0f, 10.0f, 5.0f);
     DM_Entity lightCube = entity_manager.Create(ObjectType::Cube, "White Lamp", EntityType::Light);
-    lightCube->setColor({1.0f, 1.0f, 1.0f, 1.0f});
+    lightCube->setColor({1.0f, 1.0f, 1.0f});
     lightCube->setPosition(lightPos);
     entity_manager.Save(lightCube);
 
     lightintShader.use();
     lightintShader.setVec3("lightPos", lightPos);
-    lightintShader.setVec4("lightColor", lightCube->getColor());
+    lightintShader.setVec3("lightColor", lightCube->getColor());
 
     // Lights vertex array
     VertexArray light_va;
     light_va.Bind();
-    VertexBuffer light_vb(MAX_VERTEX_NUM);
+    VertexBuffer light_vb;
     light_va.AddBuffer(light_vb, layout);
-    IndexBuffer light_ib(MAX_VERTEX_NUM);
+    IndexBuffer light_ib;
     light_va.UpdateVerIndBuffer(entity_manager.GetLights(), light_vb, light_ib);
 
     // Static vertex array
@@ -114,9 +112,9 @@ int Application::Run() {
 
     VertexArray static_va;
     static_va.Bind();
-    VertexBuffer static_vb(MAX_VERTEX_NUM);
+    VertexBuffer static_vb;
     light_va.AddBuffer(static_vb, layout);
-    IndexBuffer static_ib(MAX_VERTEX_NUM);
+    IndexBuffer static_ib;
     static_va.UpdateVerIndBuffer(entity_manager.GetStatic(), static_vb, static_ib);
 
     // load and create a texture
@@ -158,9 +156,9 @@ int Application::Run() {
 
         camera.OnUpdate(deltaTime);
         glm::mat4 perspective = camera.GetViewProjectionMatrix();
-        lightintShader.setMatrix4fv("perspective", perspective);
+        lightintShader.setMatrix4fv("uPerspective", perspective);
         lightintShader.setVec3("lightPos", lightCube->getPosition());
-        lightintShader.setVec4("lightColor", lightCube->getColor());
+        lightintShader.setVec3("lightColor", lightCube->getColor());
 
         // Update objects vertex buffer if entities was updated.
         if(entity_manager.GetUpdateFlag(EntityType::Object)) {
@@ -168,17 +166,17 @@ int Application::Run() {
             entity_manager.RemoveUpdateFlag(EntityType::Object);
         }
         // Draw objects.
-        Renderer::Draw(va, ib, lightintShader);
+        Renderer::DrawEntities(entity_manager.GetObjects(), va, ib, lightintShader);
 
         lightSourseShader.use();
-        lightSourseShader.setMatrix4fv("perspective", perspective);
+        lightSourseShader.setMatrix4fv("uPerspective", perspective);
         // Update lights vertex buffer if entities was updated.
         if(entity_manager.GetUpdateFlag(EntityType::Light)) {
             light_va.UpdateVerIndBuffer(entity_manager.GetLights(), light_vb, light_ib);
             entity_manager.RemoveUpdateFlag(EntityType::Light);
         }
         // Draw lights.
-        Renderer::Draw(light_va, light_ib, lightSourseShader);
+        Renderer::DrawEntities(entity_manager.GetLights(), light_va, light_ib, lightSourseShader);
 
         // Draw static.
         Renderer::DrawLines(static_va, static_ib, lightSourseShader);
