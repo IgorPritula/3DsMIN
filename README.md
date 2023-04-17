@@ -12,11 +12,6 @@ Features:
 
 ![alt text](https://raw.githubusercontent.com/IgorPritula/3DsMIN/master/Screenshot.png)
 
-Future features:
-* Multiple lights calculation.
-* Create lights objects with gui.
-* Export/import scene in lua or yaml.
-* Fixed camera, switching between cameras.
 
 
 
@@ -33,6 +28,7 @@ Process CMake build:
 `cd build`  
 `cmake ../`  
 `make `  
+`./3DsMIN`  
 
 #### For Windows.  
 Run cmake in Visual Studio Command Prompt to be able to invoke `cl` compiler and `nmake`.  
@@ -41,3 +37,4 @@ Run cmake in Visual Studio Command Prompt to be able to invoke `cl` compiler and
 `cd build`  
 `cmake -G "CodeBlocks - NMake Makefiles" ../`  
 `cmake --build ./`  
+`3DsMIN`  
